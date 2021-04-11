@@ -49,8 +49,8 @@ class App:
         self.__GLabel_544.place(x=150, y=50, width=70, height=25)
 
        # these canvases are broken, fix them
-        self.__GLineEdit_517 = tk.Canvas(root, bg='yellow')
-        self.__GLineEdit_517.place(x=50, y=130, width=230, height=140)
+        self._gCanvas_upleft = tk.Canvas(root, bg='yellow')
+        self._gCanvas_upleft.place(x=50, y=130, width=230, height=140)
 
         self.__GLineEdit_985 = tk.Canvas(root, bg='red')
         self.__GLineEdit_985.place(x=310, y=130, width=230, height=140)
