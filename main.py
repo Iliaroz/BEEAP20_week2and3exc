@@ -48,18 +48,18 @@ class App:
         self.__GLabel_544["text"] = "label"
         self.__GLabel_544.place(x=150, y=50, width=70, height=25)
 
-        # these canvases are broken, fix them
-        self.__GLineEdit_517 = tk.Canvas(root)
-        self.__GLineEdit_517.place(x=50, y=130, width=234, height=140)
+       # these canvases are broken, fix them
+        self.__GLineEdit_517 = tk.Canvas(root, bg='yellow')
+        self.__GLineEdit_517.place(x=50, y=130, width=230, height=140)
 
-        self.__GLineEdit_985 = tk.Canvas(root)
-        self.__GLineEdit_985.place(x=310, y=130, width=239, height=139)
+        self.__GLineEdit_985 = tk.Canvas(root, bg='red')
+        self.__GLineEdit_985.place(x=310, y=130, width=230, height=140)
 
-        self.__GLineEdit_392 = tk.Canvas(root)
-        self.__GLineEdit_392.place(x=50, y=290, width=233, height=157)
+        self.__GLineEdit_392 = tk.Canvas(root, bg='blue')
+        self.__GLineEdit_392.place(x=50, y=290, width=230, height=140)
 
-        self.__GLineEdit_700 = tk.Canvas(root)
-        self.__GLineEdit_700.place(x=310, y=290, width=234, height=158)
+        self.__GLineEdit_700 = tk.Canvas(root, bg='green')
+        self.__GLineEdit_700.place(x=310, y=290, width=230, height=140)
 
     def hButton_open_command(self):
         filetypes = (
