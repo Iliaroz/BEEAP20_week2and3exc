@@ -52,8 +52,8 @@ class App:
         self._gCanvas_upleft = tk.Canvas(root, bg='yellow')
         self._gCanvas_upleft.place(x=50, y=130, width=230, height=140)
 
-        self.__GLineEdit_985 = tk.Canvas(root, bg='red')
-        self.__GLineEdit_985.place(x=310, y=130, width=230, height=140)
+        self.__GLineEdit_upright = tk.Canvas(root, bg='red')
+        self.__GLineEdit_upright.place(x=310, y=130, width=230, height=140)
 
         self.__GLineEdit_392 = tk.Canvas(root, bg='blue')
         self.__GLineEdit_392.place(x=50, y=290, width=230, height=140)
