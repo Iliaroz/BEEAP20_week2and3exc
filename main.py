@@ -9,10 +9,13 @@ import tkinter.font as tkFont
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
 
+import os.path
+
+
 class App:
     def __init__(self, root):
         # setting title
-        root.title("undefined")
+        root.title("Power histogram maker GUI")
         # setting window size
         width = 600
         height = 500
@@ -23,19 +26,19 @@ class App:
         root.geometry(alignstr)
         root.resizable(width=False, height=False)
 
-        self.__GButton_450 = tk.Button(root)
-        self.__GButton_450["bg"] = "#efefef"
-        ft = tkFont.Font(family='Times', size=10)
-        self.__GButton_450["font"] = ft
-        self.__GButton_450["fg"] = "#000000"
-        self.__GButton_450["justify"] = "center"
-        self.__GButton_450["text"] = "Button"
-        self.__GButton_450.place(x=70, y=50, width=70, height=25)
-        self.__GButton_450["command"] = self.__GButton_450_command
+        self._gButton_open = tk.Button(root)
+        self._gButton_open["bg"] = "#efefef"
+        ft = tkFont.Font(family='Times', size=12)
+        self._gButton_open["font"] = ft
+        self._gButton_open["fg"] = "#000000"
+        self._gButton_open["justify"] = "center"
+        self._gButton_open["text"] = "Open csv..."
+        self._gButton_open.place(x=50, y=40, width=100, height=32)
+        self._gButton_open["command"] = self.hButton_open_command
 
-        self.__GListBox_563 = ttk.Combobox(root)
-        self.__GListBox_563.place(x=350, y=50, width=80, height=25)
-        self.__GListBox_563.bind("<<ComboboxSelected>>", self.__comboBoxCb)
+        self._gCombo_city = ttk.Combobox(root)
+        self._gCombo_city.place(x=350, y=50, width=80, height=25)
+        self._gCombo_city.bind("<<ComboboxSelected>>", self.hCombo_city_selected)
 
         self.__GLabel_544 = tk.Label(root)
         ft = tkFont.Font(family='Times', size=10)
@@ -58,27 +61,45 @@ class App:
         self.__GLineEdit_700 = tk.Canvas(root)
         self.__GLineEdit_700.place(x=310, y=290, width=234, height=158)
 
-    def __GButton_450_command(self):
-        filePath = fd.askopenfilename(initialdir='.')
-        try:
-            self.__df = pd.read_csv(filePath)
-            self.__df = self.__df.dropna()
-            self.__GListBox_563['values'] = list(self.__df['COMMUNITY AREA NAME'].unique())
-        except:
-            # quick and dirty, desired behavior would be to show a notification pop up that says
-            # "nope!"
-            print('nope')
+    def hButton_open_command(self):
+        filetypes = (
+        ('CSV files', '*.csv'),
+        ('All files', '*.*')
+        )
+
+        filePath = fd.askopenfilename(
+                title='Open a CSV file ...',
+                initialdir='./',
+                filetypes=filetypes)
+        if os.path.isfile(filePath) :
+            try:
+                self.__df = pd.read_csv(filePath)
+                self.__df = self.__df.dropna()
+                vals = list(self.__df['COMMUNITY AREA NAME'].unique())
+                self._gCombo_city['values'] = vals
+                # TODO: visibility of label and combobox ?
+                # or change label text ?
+                
+            except OSError as err:
+                print(f"Cannot import file {filePath}.\nOS error: {err}\nExit.")
+                # TODO:  show some gui error about file
+            except:
+                print("Some error happend during opening csv file")
+                # TODO: show some gui error message
+        else:
+            print("No file selected. (or not ordinary file selected)")
 
     # desired behavior: select one area, show 4 plots drawn on 4 canvases of that area: 
     # top left: bar chart, average KWH by month
     # top right: bar chart, average THERM by month
     # bottom left and bottom right up to you
-    def __comboBoxCb(self, event=None):
-        self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME'] == self.__GListBox_563.get()]
+    def hCombo_city_selected(self, event=None):
+        self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME'] == self._gCombo_city.get()]
         print(self.__subdf.head())
         fig1 = Figure(figsize=(self.__GLineEdit_392.winfo_width, self.__GLineEdit_392.winfo_height), dpi=100)
         ax1 = fig1.add_subplot(111)
         self.__subdf.iloc[:, range(self.__subdf.columns.get_loc['KWH JANUARY 2010'], 12)].mean().plot.bar(ax=ax1)
+        # TODO: write code for histogram creating
 
 
 if __name__ == "__main__":
