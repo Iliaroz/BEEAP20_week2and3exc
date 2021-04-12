@@ -120,7 +120,7 @@ class App:
         janind = self.__subdf.columns.get_loc("THERM JANUARY 2010")
         graph1 = (self.__subdf.iloc[ : ,  range(janind, (janind + 12))  ]).mean().plot.bar(ax=ax2)
 
-
+#test comment
 
 
     # TODO: resize canvases on window resize
