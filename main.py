@@ -40,26 +40,26 @@ class App:
         self._gCombo_city.place(x=350, y=50, width=80, height=25)
         self._gCombo_city.bind("<<ComboboxSelected>>", self.hCombo_city_selected)
 
-        self.__GLabel_544 = tk.Label(root)
+        self._gLabel_path = tk.Label(root)
         ft = tkFont.Font(family='Times', size=10)
-        self.__GLabel_544["font"] = ft
-        self.__GLabel_544["fg"] = "#333333"
-        self.__GLabel_544["justify"] = "center"
-        self.__GLabel_544["text"] = "label"
-        self.__GLabel_544.place(x=150, y=50, width=70, height=25)
+        self._gLabel_path["font"] = ft
+        self._gLabel_path["fg"] = "#333333"
+        self._gLabel_path["justify"] = "center"
+        self._gLabel_path["text"] = "label"
+        self._gLabel_path.place(x=150, y=50, width=70, height=25)
 
        # these canvases are broken, fix them
         self._gCanvas_upleft = tk.Canvas(root, bg='yellow')
         self._gCanvas_upleft.place(x=50, y=130, width=230, height=140)
 
-        self.__GLineEdit_upright = tk.Canvas(root, bg='red')
-        self.__GLineEdit_upright.place(x=310, y=130, width=230, height=140)
+        self._gCanvas_upright = tk.Canvas(root, bg='red')
+        self._gCanvas_upright.place(x=310, y=130, width=230, height=140)
 
-        self.__GLineEdit_392 = tk.Canvas(root, bg='blue')
-        self.__GLineEdit_392.place(x=50, y=290, width=230, height=140)
+        self._gCanvas_botleft = tk.Canvas(root, bg='blue')
+        self._gCanvas_botleft.place(x=50, y=290, width=230, height=140)
 
-        self.__GLineEdit_700 = tk.Canvas(root, bg='green')
-        self.__GLineEdit_700.place(x=310, y=290, width=230, height=140)
+        self._gCanvas_botleft = tk.Canvas(root, bg='green')
+        self._gCanvas_botleft.place(x=310, y=290, width=230, height=140)
 
     def hButton_open_command(self):
         filetypes = (
