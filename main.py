@@ -45,8 +45,8 @@ class App:
         self._gLabel_path["font"] = ft
         self._gLabel_path["fg"] = "#333333"
         self._gLabel_path["justify"] = "center"
-        self._gLabel_path["text"] = "label"
-        self._gLabel_path.place(x=150, y=50, width=70, height=25)
+        self._gLabel_path["text"] = "no file selected"
+        self._gLabel_path.place(x=150, y=50, width=150, height=25)
 
        # these canvases are broken, fix them
         self._gCanvas_upleft = tk.Canvas(root, bg='yellow')
@@ -78,6 +78,7 @@ class App:
                 vals = list(self.__df['COMMUNITY AREA NAME'].unique())
                 vals.sort()
                 self._gCombo_city['values'] = vals
+                self._gLabel_path["text"] = os.path.basename(filePath)
                 # TODO: visibility of label and combobox ?
                 # or change label text ?
                 
