@@ -58,8 +58,8 @@ class App:
         self._gCanvas_botleft = tk.Canvas(root, bg='blue')
         self._gCanvas_botleft.place(x=50, y=290, width=230, height=140)
 
-        self._gCanvas_botleft = tk.Canvas(root, bg='green')
-        self._gCanvas_botleft.place(x=310, y=290, width=230, height=140)
+        self._gCanvas_botright = tk.Canvas(root, bg='green')
+        self._gCanvas_botright.place(x=310, y=290, width=230, height=140)
 
     def hButton_open_command(self):
         filetypes = (
@@ -98,7 +98,9 @@ class App:
     def hCombo_city_selected(self, event=None):
         self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME'] == self._gCombo_city.get()]
         print(self.__subdf.head())
-        fig1 = Figure(figsize=(self.__GLineEdit_392.winfo_width, self.__GLineEdit_392.winfo_height), dpi=100)
+        fig1 = Figure(figsize=(10,12), dpi=100)#put here size of the canvas
+        #(self.__GLineEdit_392.winfo_width, self.__GLineEdit_392.winfo_height)
+        #GLineEdit_392 - in this example- botleft canvas
         ax1 = fig1.add_subplot(111)
         self.__subdf.iloc[:, range(self.__subdf.columns.get_loc['KWH JANUARY 2010'], 12)].mean().plot.bar(ax=ax1)
         # TODO: write code for histogram creating
