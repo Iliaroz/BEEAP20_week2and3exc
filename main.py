@@ -121,6 +121,25 @@ class App:
         graph1 = (self.__subdf.iloc[ : ,  range(janind, (janind + 12))  ]).mean().plot.bar(ax=ax2)
 
 
+        fig3 = plt.Figure(figsize=(self._gCanvas_botleft.winfo_width(), self._gCanvas_botleft.winfo_height()), dpi =100)
+        ax3= fig3.add_subplot(111)
+        chart_type = FigureCanvasTkAgg(fig3, self._gCanvas_botleft)
+        chart_type.get_tk_widget().pack()
+        janind = self.__subdf.columns.get_loc("KWH JANUARY 2010")
+        graph1 = (self.__subdf.iloc[ : ,  range(janind, (janind + 12))  ])
+        graph1.max().plot(ax=ax3,color='red', marker ='*')
+        graph1.min().plot(ax=ax3, color='green', marker='o')
+        
+        fig4 = plt.Figure(figsize=(self._gCanvas_botright.winfo_width(), self._gCanvas_botright.winfo_height()), dpi =100)
+        ax4= fig4.add_subplot(111)
+        chart_type = FigureCanvasTkAgg(fig4, self._gCanvas_botright)
+        chart_type.get_tk_widget().pack()
+        janind = self.__subdf.columns.get_loc("THERM JANUARY 2010")
+        graph1 = (self.__subdf.iloc[ : ,  range(janind, (janind + 12))  ])
+        graph1.max().plot(ax=ax4,color='red', marker ='*')
+        graph1.min().plot(ax=ax4, color='green', marker='o')
+        
+
 
 
     # TODO: resize canvases on window resize
