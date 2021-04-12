@@ -49,6 +49,7 @@ class App:
         self._gLabel_path.place(x=150, y=50, width=150, height=25)
 
        # these canvases are broken, fix them
+       # TODO: set canvases size window size related
         self._gCanvas_upleft = tk.Canvas(root, bg='yellow')
         self._gCanvas_upleft.place(x=50, y=130, width=230, height=140)
 
@@ -58,8 +59,8 @@ class App:
         self._gCanvas_botleft = tk.Canvas(root, bg='blue')
         self._gCanvas_botleft.place(x=50, y=290, width=230, height=140)
 
-        self._gCanvas_botleft = tk.Canvas(root, bg='green')
-        self._gCanvas_botleft.place(x=310, y=290, width=230, height=140)
+        self._gCanvas_botright = tk.Canvas(root, bg='green')
+        self._gCanvas_botright.place(x=310, y=290, width=230, height=140)
 
     def hButton_open_command(self):
         filetypes = (
@@ -79,8 +80,6 @@ class App:
                 vals.sort()
                 self._gCombo_city['values'] = vals
                 self._gLabel_path["text"] = os.path.basename(filePath)
-                # TODO: visibility of label and combobox ?
-                # or change label text ?
                 
             except OSError as err:
                 print(f"Cannot import file {filePath}.\nOS error: {err}\nExit.")
@@ -96,14 +95,35 @@ class App:
     # top right: bar chart, average THERM by month
     # bottom left and bottom right up to you
     def hCombo_city_selected(self, event=None):
-        self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME'] == self._gCombo_city.get()]
-        print(self.__subdf.head())
-        fig1 = Figure(figsize=(self.__GLineEdit_392.winfo_width, self.__GLineEdit_392.winfo_height), dpi=100)
+        # *** top left bar chart for KWH
+        selected_city = self._gCombo_city.get()
+        print(f"Selected city: {selected_city}")
+        self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME'] == selected_city]
+        # // https://datatofish.com/matplotlib-charts-tkinter-gui/
+        fig1 = plt.Figure(figsize=( self._gCanvas_upleft.winfo_width(), self._gCanvas_upleft.winfo_height() ), dpi=100)
         ax1 = fig1.add_subplot(111)
-        self.__subdf.iloc[:, range(self.__subdf.columns.get_loc['KWH JANUARY 2010'], 12)].mean().plot.bar(ax=ax1)
-        # TODO: write code for histogram creating
+        # --- include it into tkinter
+        chart_type = FigureCanvasTkAgg(fig1, self._gCanvas_upleft )
+        chart_type.get_tk_widget().pack()
+        # ---
+        janind = self.__subdf.columns.get_loc("KWH JANUARY 2010")
+        graph1 = (self.__subdf.iloc[ : ,  range(janind, (janind + 12))  ]).mean().plot.bar(ax=ax1)
+        # 
 
 
+
+        fig2 = plt.Figure(figsize=( self._gCanvas_upright.winfo_width(), self._gCanvas_upright.winfo_height() ), dpi=100)
+        ax2 = fig2.add_subplot(111)
+        # --- include it into tkinter
+        chart_type = FigureCanvasTkAgg(fig2, self._gCanvas_upright )
+        chart_type.get_tk_widget().pack()
+        janind = self.__subdf.columns.get_loc("THERM JANUARY 2010")
+        graph1 = (self.__subdf.iloc[ : ,  range(janind, (janind + 12))  ]).mean().plot.bar(ax=ax2)
+
+
+
+
+    # TODO: resize canvases on window resize
 
 
 
