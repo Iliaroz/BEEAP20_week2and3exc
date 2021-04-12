@@ -75,7 +75,8 @@ class App:
             try:
                 self.__df = pd.read_csv(filePath)
                 self.__df = self.__df.dropna()
-                vals = sorted(list(self.__df['COMMUNITY AREA NAME'].unique()))
+                vals = list(self.__df['COMMUNITY AREA NAME'].unique())
+                vals.sort()
                 self._gCombo_city['values'] = vals
                 # TODO: visibility of label and combobox ?
                 # or change label text ?
