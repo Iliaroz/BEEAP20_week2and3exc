@@ -75,7 +75,7 @@ class App:
             try:
                 self.__df = pd.read_csv(filePath)
                 self.__df = self.__df.dropna()
-                vals = list(self.__df['COMMUNITY AREA NAME'].unique())
+                vals = sorted(list(self.__df['COMMUNITY AREA NAME'].unique()))
                 self._gCombo_city['values'] = vals
                 # TODO: visibility of label and combobox ?
                 # or change label text ?
@@ -100,6 +100,9 @@ class App:
         ax1 = fig1.add_subplot(111)
         self.__subdf.iloc[:, range(self.__subdf.columns.get_loc['KWH JANUARY 2010'], 12)].mean().plot.bar(ax=ax1)
         # TODO: write code for histogram creating
+
+
+
 
 
 if __name__ == "__main__":
