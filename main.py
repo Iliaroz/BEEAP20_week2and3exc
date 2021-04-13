@@ -17,6 +17,7 @@ class App:
         # setting title
         root.title("Power histogram maker GUI")
         # setting window size
+        #TODO: MAKE WINDOW BIGGER FOR FIGURES
         width = 600
         height = 500
         screenwidth = root.winfo_screenwidth()
@@ -36,10 +37,21 @@ class App:
         self._gButton_open.place(x=50, y=40, width=100, height=32)
         self._gButton_open["command"] = self.hButton_open_command
 
+        #COMBOBOX
         self._gCombo_city = ttk.Combobox(root)
         self._gCombo_city.place(x=350, y=50, width=80, height=25)
         self._gCombo_city.bind("<<ComboboxSelected>>", self.hCombo_city_selected)
-
+        #COMBOBOX LABEL
+        #TODO: MAKE IT NICER LOOKING
+        self._gLabel_combo = tk.Label(root)
+        ft = tkFont.Font(family = 'Times', size = 12)
+        self._gLabel_combo["font"]= ft
+        self._gLabel_combo["fg"] = "#333333"
+        self._gLabel_combo["justify"] = "center"
+        self._gLabel_combo['text']="Select city"
+        self._gLabel_combo.place(x=350, y= 20,width = 80, height = 25)
+        
+        #LABEL FOR CSV FILE SELECTED
         self._gLabel_path = tk.Label(root)
         ft = tkFont.Font(family='Times', size=10)
         self._gLabel_path["font"] = ft
@@ -47,8 +59,10 @@ class App:
         self._gLabel_path["justify"] = "center"
         self._gLabel_path["text"] = "no file selected"
         self._gLabel_path.place(x=150, y=50, width=150, height=25)
+        
+        
 
-       # these canvases are broken, fix them
+       #TODO: MAKE THEM BIGGER
        # TODO: set canvases size window size related
         self._gCanvas_upleft = tk.Canvas(root, bg='yellow')
         self._gCanvas_upleft.place(x=50, y=130, width=230, height=140)
@@ -100,6 +114,8 @@ class App:
         print(f"Selected city: {selected_city}")
         self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME'] == selected_city]
         # // https://datatofish.com/matplotlib-charts-tkinter-gui/
+        
+        #UP LEFT FIGURE
         fig1 = plt.Figure(figsize=( self._gCanvas_upleft.winfo_width(), self._gCanvas_upleft.winfo_height() ), dpi=100)
         ax1 = fig1.add_subplot(111)
         # --- include it into tkinter
@@ -111,7 +127,7 @@ class App:
         # 
 
 
-
+        #UP RIGHT FIGURE
         fig2 = plt.Figure(figsize=( self._gCanvas_upright.winfo_width(), self._gCanvas_upright.winfo_height() ), dpi=100)
         ax2 = fig2.add_subplot(111)
         # --- include it into tkinter
@@ -120,7 +136,7 @@ class App:
         janind = self.__subdf.columns.get_loc("THERM JANUARY 2010")
         graph1 = (self.__subdf.iloc[ : ,  range(janind, (janind + 12))  ]).mean().plot.bar(ax=ax2)
 
-
+        #BOTTOM LEFT FIGURE
         fig3 = plt.Figure(figsize=(self._gCanvas_botleft.winfo_width(), self._gCanvas_botleft.winfo_height()), dpi =100)
         ax3= fig3.add_subplot(111)
         chart_type = FigureCanvasTkAgg(fig3, self._gCanvas_botleft)
@@ -130,6 +146,7 @@ class App:
         graph1.max().plot(ax=ax3,color='red', marker ='*')
         graph1.min().plot(ax=ax3, color='green', marker='o')
         
+        #BOTTOM RIGHT FIGURE
         fig4 = plt.Figure(figsize=(self._gCanvas_botright.winfo_width(), self._gCanvas_botright.winfo_height()), dpi =100)
         ax4= fig4.add_subplot(111)
         chart_type = FigureCanvasTkAgg(fig4, self._gCanvas_botright)
