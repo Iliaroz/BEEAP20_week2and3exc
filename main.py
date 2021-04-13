@@ -6,8 +6,8 @@ from tkinter import ttk
 from tkinter import filedialog as fd
 import tkinter.font as tkFont
 
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.pyplot import figure
 
 import os.path
 
@@ -18,7 +18,7 @@ class App:
         root.title("Power histogram maker GUI")
         # setting window size
         #TODO: MAKE WINDOW BIGGER FOR FIGURES
-        width = 600
+        width = 800
         height = 500
         screenwidth = root.winfo_screenwidth()
         screenheight = root.winfo_screenheight()
@@ -27,7 +27,7 @@ class App:
         root.geometry(alignstr)
         
         ## setting in True  enable to resize window when displayed
-        root.resizable(width=False, height=False)
+        root.resizable(width=True, height=True)
 
         ## frame for buttons and other controls..
         self._gF_controls = tk.Frame(root)
@@ -84,7 +84,7 @@ class App:
 #        self._gCanvas_upleft.pack(side=tk.LEFT, fill = tk.BOTH, expand = True)
         self._gCanvas_upleft.place(relx=0, rely=0, relwidth=0.5, relheight=0.5)
         self._gCanvas_upleft.update()
-        self.fig1 = Figure(figsize=(      self._gCanvas_upleft.winfo_width() / 100, self._gCanvas_upleft.winfo_height() /100   ), dpi=100)
+        self.fig1 = figure(figsize=(      self._gCanvas_upleft.winfo_width() / 100, self._gCanvas_upleft.winfo_height() /100   ), dpi=100)
         self.ax1 = self.fig1.add_subplot(111)
         self.chart1 = FigureCanvasTkAgg(self.fig1, self._gCanvas_upleft )
 
@@ -93,20 +93,20 @@ class App:
 #        self._gCanvas_upright.pack(side=tk.RIGHT, fill = tk.BOTH, expand = True)
         self._gCanvas_upright.place(relx=0.5, rely=0, relwidth=0.5, relheight=0.5)
         self._gCanvas_upright.update()
-        self.fig2 = Figure(figsize=(   self._gCanvas_upright.winfo_width() / 100, self._gCanvas_upright.winfo_height() /100  ), dpi=100)
+        self.fig2 = figure(figsize=(   self._gCanvas_upright.winfo_width() / 100, self._gCanvas_upright.winfo_height() /100  ), dpi=100)
         self.ax2 = self.fig1.add_subplot(111)
         self.chart2 = FigureCanvasTkAgg(self.fig1, self._gCanvas_upright )
 
         self._gCanvas_botleft = tk.Canvas(self._gF_graphs, bg='blue')
         self._gCanvas_botleft.place(relx=0, rely=0.5, relwidth=0.5, relheight=0.5)
-        self.fig3 = Figure(figsize=(   self._gCanvas_botleft.winfo_width() / 100, self._gCanvas_botleft.winfo_height() /100  ), dpi=100)
+        self.fig3 = figure(figsize=(   self._gCanvas_botleft.winfo_width() / 100, self._gCanvas_botleft.winfo_height() /100  ), dpi=100)
         self.ax3 = self.fig1.add_subplot(111)
         self.chart3 = FigureCanvasTkAgg(self.fig1, self._gCanvas_botleft )
 #        self.chart3.get_tk_widget().pack(side=tk.BOTTOM,fill=tk.BOTH,expand=True)
 
         self._gCanvas_botright = tk.Canvas(self._gF_graphs, bg='green')
         self._gCanvas_botright.place(relx=0.5, rely=0.5, relwidth=0.5, relheight=0.5)
-        self.fig4 = Figure(figsize=(   self._gCanvas_botright.winfo_width() / 100, self._gCanvas_botright.winfo_height() /100  ), dpi=100)
+        self.fig4 = figure(figsize=(   self._gCanvas_botright.winfo_width() / 100, self._gCanvas_botright.winfo_height() /100  ), dpi=100)
         self.ax4 = self.fig1.add_subplot(111)
         self.chart4 = FigureCanvasTkAgg(self.fig1, self._gCanvas_botright )
 #        self.chart4.get_tk_widget().pack(side=tk.BOTTOM,fill=tk.BOTH,expand=True)
@@ -150,23 +150,13 @@ class App:
         print(f"Selected city: {selected_city}")
         self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME'] == selected_city]
         # // https://datatofish.com/matplotlib-charts-tkinter-gui/
-        
-
-    
-   
-    
-    
-    
-    
-    
-
-
+ 
         def upleft(self):
             #UP LEFT FIGURE
             self.chart1.get_tk_widget().pack(side=tk.BOTTOM,fill=tk.BOTH,expand=True)
             self.ax1.clear()
             janind = self.__subdf.columns.get_loc("KWH JANUARY 2010")
-            self.ax1.bar(    range(janind, (janind + 12)),
+            self.ax1.bar(     range(1, 13),
                     (self.__subdf.iloc[ : ,  range(janind, (janind + 12))  ]).mean()     )
             self.chart1.draw()
 
@@ -175,7 +165,7 @@ class App:
             self.chart2.get_tk_widget().pack(side=tk.BOTTOM,fill=tk.BOTH,expand=True)
             self.ax2.clear()
             janind = self.__subdf.columns.get_loc("THERM JANUARY 2010")
-            self.ax2.bar(    range(janind, (janind + 12)),
+            self.ax2.bar(    range(1, 13),
                     (self.__subdf.iloc[ : ,  range(janind, (janind + 12))  ]).mean()     )
             self.chart2.draw()
         
@@ -184,10 +174,10 @@ class App:
             self.chart3.get_tk_widget().pack(side=tk.BOTTOM,fill=tk.BOTH,expand=True)
             self.ax3.clear()
             janind = self.__subdf.columns.get_loc("KWH JANUARY 2010")
-            self.ax3.plot(    range(janind, (janind + 12)),
+            self.ax3.plot(     range(1, 13),
                     (self.__subdf.iloc[ : ,  range(janind, (janind + 12))  ]).max(),
                     color='red', marker ='*'    )
-            self.ax3.plot(    range(janind, (janind + 12)),
+            self.ax3.plot(     range(1, 13),
                     (self.__subdf.iloc[ : ,  range(janind, (janind + 12))  ]).mean(),
                     color='blue', marker ='s'    )
             self.chart3.draw()
@@ -197,10 +187,10 @@ class App:
             self.chart4.get_tk_widget().pack(side=tk.BOTTOM,fill=tk.BOTH,expand=True)
             self.ax4.clear()
             janind = self.__subdf.columns.get_loc("THERM JANUARY 2010")
-            self.ax4.plot(    range(janind, (janind + 12)),
+            self.ax4.plot(     range(1, 13),
                     (self.__subdf.iloc[ : ,  range(janind, (janind + 12))  ]).max(),
                     color='red', marker ='*'    )
-            self.ax4.plot(    range(janind, (janind + 12)),
+            self.ax4.plot(     range(1, 13),
                     (self.__subdf.iloc[ : ,  range(janind, (janind + 12))  ]).mean(),
                     color='blue', marker ='s'    )
             self.chart4.draw()
