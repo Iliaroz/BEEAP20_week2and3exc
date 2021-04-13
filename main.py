@@ -25,56 +25,73 @@ class App:
         alignstr = '%dx%d+%d+%d' % (width, height,
                                     (screenwidth - width) / 2, (screenheight - height) / 2)
         root.geometry(alignstr)
-        root.resizable(width=False, height=False)#this enable to resize window when displayed
+        
+        ## setting in True  enable to resize window when displayed
+        root.resizable(width=False, height=False)
 
-        self._gButton_open = tk.Button(root)
+        ## frame for buttons and other controls..
+        self._gF_controls = tk.Frame(root)
+        self._gF_controls.pack(ipadx=10, ipady=10)
+        ## frame for charts
+        self._gF_graphs = tk.Frame(root)
+        self._gF_graphs.pack(side=tk.BOTTOM,
+                             padx=5, pady=5,
+                             fill=tk.BOTH,expand=True)
+
+
+        self._gButton_open = tk.Button(self._gF_controls)
         self._gButton_open["bg"] = "#efefef"
         ft = tkFont.Font(family='Times', size=12)
         self._gButton_open["font"] = ft
         self._gButton_open["fg"] = "#000000"
         self._gButton_open["justify"] = "center"
         self._gButton_open["text"] = "Open csv..."
-        self._gButton_open.place(x=50, y=40, width=100, height=32)
+        self._gButton_open.pack(side=tk.LEFT,
+                                ipadx=10)
         self._gButton_open["command"] = self.hButton_open_command
 
-        #COMBOBOX
-        self._gCombo_city = ttk.Combobox(root)
-        self._gCombo_city.place(x=350, y=50, width=80, height=25)
-        self._gCombo_city.bind("<<ComboboxSelected>>", self.hCombo_city_selected)
-        #COMBOBOX LABEL
-        #TODO: MAKE IT NICER LOOKING
-        self._gLabel_combo = tk.Label(root)
-        ft = tkFont.Font(family = 'Times', size = 12)
-        self._gLabel_combo["font"]= ft
-        self._gLabel_combo["fg"] = "#333333"
-        self._gLabel_combo["justify"] = "center"
-        self._gLabel_combo['text']="Select city"
-        self._gLabel_combo.place(x=350, y= 20,width = 80, height = 25)
-        
         #LABEL FOR CSV FILE SELECTED
-        self._gLabel_path = tk.Label(root)
+        self._gLabel_path = tk.Label(self._gF_controls)
         ft = tkFont.Font(family='Times', size=10)
         self._gLabel_path["font"] = ft
         self._gLabel_path["fg"] = "#333333"
         self._gLabel_path["justify"] = "center"
         self._gLabel_path["text"] = "no file selected"
-        self._gLabel_path.place(x=150, y=50, width=150, height=25)
+        self._gLabel_path.pack(side=tk.LEFT,
+                               ipadx=10)
+
+
+        #COMBOBOX
+        self._gCombo_city = ttk.Combobox(self._gF_controls)
+        self._gCombo_city.pack(side=tk.RIGHT)
+        self._gCombo_city.bind("<<ComboboxSelected>>", self.hCombo_city_selected)
+        #COMBOBOX LABEL
+        
+        #TODO: MAKE IT NICER LOOKING
+        self._gLabel_combo = tk.Label(self._gF_controls)
+        ft = tkFont.Font(family = 'Times', size = 12)
+        self._gLabel_combo["font"]= ft
+        self._gLabel_combo["fg"] = "#333333"
+        self._gLabel_combo["justify"] = "center"
+        self._gLabel_combo['text']="Select city"
+        self._gLabel_combo.pack(side=tk.LEFT)
+        
         
         
 
        #TODO: MAKE THEM BIGGER
        # TODO: set canvases size window size related
-        self._gCanvas_upleft = tk.Canvas(root, bg='yellow')
-        self._gCanvas_upleft.place(x=50, y=130, width=230, height=150)
+        self._gCanvas_upleft = tk.Canvas(self._gF_graphs, bg='yellow')
+        self._gCanvas_upleft.place(relx=0, rely=0, relwidth=0.5, relheight=0.5)
 
-        self._gCanvas_upright = tk.Canvas(root, bg='red')
-        self._gCanvas_upright.place(x=310, y=130, width=230, height=150)
+        self._gCanvas_upright = tk.Canvas(self._gF_graphs, bg='red')
+        self._gCanvas_upright.place(relx=0.5, rely=0, relwidth=0.5, relheight=0.5)
 
-        self._gCanvas_botleft = tk.Canvas(root, bg='blue')
-        self._gCanvas_botleft.place(x=50, y=290, width=230, height=150)
+        self._gCanvas_botleft = tk.Canvas(self._gF_graphs, bg='blue')
+        self._gCanvas_botleft.place(relx=0, rely=0.5, relwidth=0.5, relheight=0.5)
 
-        self._gCanvas_botright = tk.Canvas(root, bg='green')
-        self._gCanvas_botright.place(x=310, y=290, width=230, height=150)
+        self._gCanvas_botright = tk.Canvas(self._gF_graphs, bg='green')
+        self._gCanvas_botright.place(relx=0.5, rely=0.5, relwidth=0.5, relheight=0.5)
 
     def hButton_open_command(self):
         filetypes = (
@@ -118,7 +135,7 @@ class App:
         
         def upleft(self):
             #UP LEFT FIGURE
-            fig1 = plt.Figure(figsize=( self._gCanvas_upleft.winfo_width(), self._gCanvas_upleft.winfo_height() ), dpi=40)
+            fig1 = plt.Figure(figsize=( self._gCanvas_upleft.winfo_width() /100 , self._gCanvas_upleft.winfo_height()/100 ), dpi=40)
             ax1 = fig1.add_subplot(111)
             # --- include it into tkinter
             chart_type = FigureCanvasTkAgg(fig1, self._gCanvas_upleft )
@@ -130,7 +147,7 @@ class App:
 
         def upright(self):
             #UP RIGHT FIGURE
-            fig2 = plt.Figure(figsize=( self._gCanvas_upright.winfo_width(), self._gCanvas_upright.winfo_height() ), dpi=40)
+            fig2 = plt.Figure(figsize=( self._gCanvas_upright.winfo_width()/100, self._gCanvas_upright.winfo_height()/100 ), dpi=40)
             ax2 = fig2.add_subplot(111)
             # --- include it into tkinter
             chart_type = FigureCanvasTkAgg(fig2, self._gCanvas_upright )
@@ -141,7 +158,7 @@ class App:
         
         def botleft(self):
             #BOTTOM LEFT FIGURE
-            fig3 = plt.Figure(figsize=(self._gCanvas_botleft.winfo_width(), self._gCanvas_botleft.winfo_height()), dpi =40)
+            fig3 = plt.Figure(figsize=(self._gCanvas_botleft.winfo_width()/100, self._gCanvas_botleft.winfo_height()/100 ), dpi =40)
             ax3= fig3.add_subplot(111)
             chart_type = FigureCanvasTkAgg(fig3, self._gCanvas_botleft)
             chart_type.get_tk_widget().pack()
@@ -154,7 +171,7 @@ class App:
         
         def botfig(self):   
             #BOTTOM RIGHT FIGURE
-            fig4 = plt.Figure(figsize=(self._gCanvas_botright.winfo_width(), self._gCanvas_botright.winfo_height()), dpi =40)
+            fig4 = plt.Figure(figsize=(self._gCanvas_botright.winfo_width()/100 , self._gCanvas_botright.winfo_height()/100 ), dpi =40)
             ax4= fig4.add_subplot(111)
             chart_type = FigureCanvasTkAgg(fig4, self._gCanvas_botright)
             chart_type.get_tk_widget().pack()
@@ -168,9 +185,20 @@ class App:
 
     # TODO: resize canvases on window resize
 
+def main():
+    root = tk.Tk()
+    app = App(root)
+    # root.geometry() will return '1x1+www+hhh' here
+    root.update()
+    # now root.geometry() returns valid size/placement
+    root.minsize(root.winfo_width(), root.winfo_height())
+    
+    ## resize handler
+    ### root.bind("<Configure>", app.onsize)
+    root.mainloop()
+
+
 
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    app = App(root)
-    root.mainloop()
+    main()
