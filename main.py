@@ -77,21 +77,39 @@ class App:
         self._gLabel_combo.pack(side=tk.LEFT)
         
         
-        
+        # TODO: fake chart with text "no data to graph"
 
-       #TODO: MAKE THEM BIGGER
        # TODO: set canvases size window size related
         self._gCanvas_upleft = tk.Canvas(self._gF_graphs, bg='yellow')
+#        self._gCanvas_upleft.pack(side=tk.LEFT, fill = tk.BOTH, expand = True)
         self._gCanvas_upleft.place(relx=0, rely=0, relwidth=0.5, relheight=0.5)
+        self._gCanvas_upleft.update()
+        self.fig1 = Figure(figsize=(      self._gCanvas_upleft.winfo_width() / 100, self._gCanvas_upleft.winfo_height() /100   ), dpi=100)
+        self.ax1 = self.fig1.add_subplot(111)
+        self.chart1 = FigureCanvasTkAgg(self.fig1, self._gCanvas_upleft )
+
 
         self._gCanvas_upright = tk.Canvas(self._gF_graphs, bg='red')
+#        self._gCanvas_upright.pack(side=tk.RIGHT, fill = tk.BOTH, expand = True)
         self._gCanvas_upright.place(relx=0.5, rely=0, relwidth=0.5, relheight=0.5)
+        self._gCanvas_upright.update()
+        self.fig2 = Figure(figsize=(   self._gCanvas_upright.winfo_width() / 100, self._gCanvas_upright.winfo_height() /100  ), dpi=100)
+        self.ax2 = self.fig1.add_subplot(111)
+        self.chart2 = FigureCanvasTkAgg(self.fig1, self._gCanvas_upright )
 
         self._gCanvas_botleft = tk.Canvas(self._gF_graphs, bg='blue')
         self._gCanvas_botleft.place(relx=0, rely=0.5, relwidth=0.5, relheight=0.5)
+        self.fig3 = Figure(figsize=(   self._gCanvas_botleft.winfo_width() / 100, self._gCanvas_botleft.winfo_height() /100  ), dpi=100)
+        self.ax3 = self.fig1.add_subplot(111)
+        self.chart3 = FigureCanvasTkAgg(self.fig1, self._gCanvas_botleft )
+#        self.chart3.get_tk_widget().pack(side=tk.BOTTOM,fill=tk.BOTH,expand=True)
 
         self._gCanvas_botright = tk.Canvas(self._gF_graphs, bg='green')
         self._gCanvas_botright.place(relx=0.5, rely=0.5, relwidth=0.5, relheight=0.5)
+        self.fig4 = Figure(figsize=(   self._gCanvas_botright.winfo_width() / 100, self._gCanvas_botright.winfo_height() /100  ), dpi=100)
+        self.ax4 = self.fig1.add_subplot(111)
+        self.chart4 = FigureCanvasTkAgg(self.fig1, self._gCanvas_botright )
+#        self.chart4.get_tk_widget().pack(side=tk.BOTTOM,fill=tk.BOTH,expand=True)
 
     def hButton_open_command(self):
         filetypes = (
@@ -133,53 +151,65 @@ class App:
         self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME'] == selected_city]
         # // https://datatofish.com/matplotlib-charts-tkinter-gui/
         
+
+    
+   
+    
+    
+    
+    
+    
+
+
         def upleft(self):
             #UP LEFT FIGURE
-            fig1 = plt.Figure(figsize=( self._gCanvas_upleft.winfo_width() /100 , self._gCanvas_upleft.winfo_height()/100 ), dpi=40)
-            ax1 = fig1.add_subplot(111)
-            # --- include it into tkinter
-            chart_type = FigureCanvasTkAgg(fig1, self._gCanvas_upleft )
-            chart_type.get_tk_widget().pack()
-            # ---
+            self.chart1.get_tk_widget().pack(side=tk.BOTTOM,fill=tk.BOTH,expand=True)
+            self.ax1.clear()
             janind = self.__subdf.columns.get_loc("KWH JANUARY 2010")
-            graph1 = (self.__subdf.iloc[ : ,  range(janind, (janind + 12))  ]).mean().plot.bar(ax=ax1)
-        upleft(self)
+            self.ax1.bar(    range(janind, (janind + 12)),
+                    (self.__subdf.iloc[ : ,  range(janind, (janind + 12))  ]).mean()     )
+            self.chart1.draw()
 
         def upright(self):
             #UP RIGHT FIGURE
-            fig2 = plt.Figure(figsize=( self._gCanvas_upright.winfo_width()/100, self._gCanvas_upright.winfo_height()/100 ), dpi=40)
-            ax2 = fig2.add_subplot(111)
-            # --- include it into tkinter
-            chart_type = FigureCanvasTkAgg(fig2, self._gCanvas_upright )
-            chart_type.get_tk_widget().pack()
+            self.chart2.get_tk_widget().pack(side=tk.BOTTOM,fill=tk.BOTH,expand=True)
+            self.ax2.clear()
             janind = self.__subdf.columns.get_loc("THERM JANUARY 2010")
-            graph1 = (self.__subdf.iloc[ : ,  range(janind, (janind + 12))  ]).mean().plot.bar(ax=ax2)
-        upright(self)
+            self.ax2.bar(    range(janind, (janind + 12)),
+                    (self.__subdf.iloc[ : ,  range(janind, (janind + 12))  ]).mean()     )
+            self.chart2.draw()
         
         def botleft(self):
             #BOTTOM LEFT FIGURE
-            fig3 = plt.Figure(figsize=(self._gCanvas_botleft.winfo_width()/100, self._gCanvas_botleft.winfo_height()/100 ), dpi =40)
-            ax3= fig3.add_subplot(111)
-            chart_type = FigureCanvasTkAgg(fig3, self._gCanvas_botleft)
-            chart_type.get_tk_widget().pack()
+            self.chart3.get_tk_widget().pack(side=tk.BOTTOM,fill=tk.BOTH,expand=True)
+            self.ax3.clear()
             janind = self.__subdf.columns.get_loc("KWH JANUARY 2010")
-            graph1 = (self.__subdf.iloc[ : ,  range(janind, (janind + 12))  ])
-            graph1.max().plot(ax=ax3,color='red', marker ='*')
-            graph1.min().plot(ax=ax3, color='green', marker='o')
-            plt.setp(ax3.get_xticklabels(), rotation = 90)
-        botleft(self)
+            self.ax3.plot(    range(janind, (janind + 12)),
+                    (self.__subdf.iloc[ : ,  range(janind, (janind + 12))  ]).max(),
+                    color='red', marker ='*'    )
+            self.ax3.plot(    range(janind, (janind + 12)),
+                    (self.__subdf.iloc[ : ,  range(janind, (janind + 12))  ]).mean(),
+                    color='blue', marker ='s'    )
+            self.chart3.draw()
         
         def botfig(self):   
             #BOTTOM RIGHT FIGURE
-            fig4 = plt.Figure(figsize=(self._gCanvas_botright.winfo_width()/100 , self._gCanvas_botright.winfo_height()/100 ), dpi =40)
-            ax4= fig4.add_subplot(111)
-            chart_type = FigureCanvasTkAgg(fig4, self._gCanvas_botright)
-            chart_type.get_tk_widget().pack()
+            self.chart4.get_tk_widget().pack(side=tk.BOTTOM,fill=tk.BOTH,expand=True)
+            self.ax4.clear()
             janind = self.__subdf.columns.get_loc("THERM JANUARY 2010")
-            graph1 = (self.__subdf.iloc[ : ,  range(janind, (janind + 12))  ])
-            graph1.max().plot(ax=ax4,color='red', marker ='*')
-            graph1.min().plot(ax=ax4, color='green', marker='o')
-            plt.setp(ax4.get_xticklabels(), rotation = 90)
+            self.ax4.plot(    range(janind, (janind + 12)),
+                    (self.__subdf.iloc[ : ,  range(janind, (janind + 12))  ]).max(),
+                    color='red', marker ='*'    )
+            self.ax4.plot(    range(janind, (janind + 12)),
+                    (self.__subdf.iloc[ : ,  range(janind, (janind + 12))  ]).mean(),
+                    color='blue', marker ='s'    )
+            self.chart4.draw()
+            
+            
+            
+        upleft(self)
+        upright(self)
+        botleft(self)
         botfig(self)
 
 
