@@ -27,7 +27,7 @@ class App:
         root.geometry(alignstr)
         
         ## setting in True  enable to resize window when displayed
-        root.resizable(width=False, height=False)
+        root.resizable(width=True, height=True)
 
         ## frame for buttons and other controls..
         self._gF_controls = tk.Frame(root)
@@ -94,21 +94,21 @@ class App:
         self._gCanvas_upright.place(relx=0.5, rely=0, relwidth=0.5, relheight=0.5)
         self._gCanvas_upright.update()
         self.fig2 = figure(figsize=(   self._gCanvas_upright.winfo_width() / 100, self._gCanvas_upright.winfo_height() /100  ), dpi=100)
-        self.ax2 = self.fig1.add_subplot(111)
-        self.chart2 = FigureCanvasTkAgg(self.fig1, self._gCanvas_upright )
+        self.ax2 = self.fig2.add_subplot(111)
+        self.chart2 = FigureCanvasTkAgg(self.fig2, self._gCanvas_upright )
 
         self._gCanvas_botleft = tk.Canvas(self._gF_graphs, bg='blue')
         self._gCanvas_botleft.place(relx=0, rely=0.5, relwidth=0.5, relheight=0.5)
         self.fig3 = figure(figsize=(   self._gCanvas_botleft.winfo_width() / 100, self._gCanvas_botleft.winfo_height() /100  ), dpi=100)
-        self.ax3 = self.fig1.add_subplot(111)
-        self.chart3 = FigureCanvasTkAgg(self.fig1, self._gCanvas_botleft )
+        self.ax3 = self.fig3.add_subplot(111)
+        self.chart3 = FigureCanvasTkAgg(self.fig3, self._gCanvas_botleft )
 #        self.chart3.get_tk_widget().pack(side=tk.BOTTOM,fill=tk.BOTH,expand=True)
 
         self._gCanvas_botright = tk.Canvas(self._gF_graphs, bg='green')
         self._gCanvas_botright.place(relx=0.5, rely=0.5, relwidth=0.5, relheight=0.5)
-        self.fig4 = figure(figsize=(   self._gCanvas_botright.winfo_width() / 100, self._gCanvas_botright.winfo_height() /100  ), dpi=100)
-        self.ax4 = self.fig1.add_subplot(111)
-        self.chart4 = FigureCanvasTkAgg(self.fig1, self._gCanvas_botright )
+        self.fig4 = figure(figsize=(   self._gCanvas_botright.winfo_width() / 100, self._gCanvas_botright.winfo_height() /100  ), dpi=60)
+        self.ax4 = self.fig4.add_subplot(111)
+        self.chart4 = FigureCanvasTkAgg(self.fig4, self._gCanvas_botright )
 #        self.chart4.get_tk_widget().pack(side=tk.BOTTOM,fill=tk.BOTH,expand=True)
 
     def hButton_open_command(self):
