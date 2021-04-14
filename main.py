@@ -18,8 +18,8 @@ class App:
         root.title("Power histogram maker GUI")
         # setting window size
         #TODO: MAKE WINDOW BIGGER FOR FIGURES
-        width = 800
-        height = 500
+        width = 1200
+        height = 700
         screenwidth = root.winfo_screenwidth()
         screenheight = root.winfo_screenheight()
         alignstr = '%dx%d+%d+%d' % (width, height,
@@ -27,7 +27,7 @@ class App:
         root.geometry(alignstr)
         
         ## setting in True  enable to resize window when displayed
-        root.resizable(width=True, height=True)
+        root.resizable(width=False, height=False)
 
         ## frame for buttons and other controls..
         self._gF_controls = tk.Frame(root)
