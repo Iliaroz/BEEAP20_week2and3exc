@@ -66,22 +66,22 @@ class App:
         # TODO: fake chart with text "no data to graph"
 
         self._gCanvas_upleft = tk.Frame(self._gF_graphs)
-        self._gCanvas_upleft.pack()
         self._gCanvas_upleft.place(relx=0, rely=0,
                                    relwidth=0.5, relheight=0.5)
         fig = plt.figure(dpi=dpi)
         self.ax1 = fig.add_subplot(111)
+        self.ax1.text(0.1,0.5,"choose file then city to display data", fontsize=10)
         self.chart1 = FigureCanvasTkAgg(fig, self._gCanvas_upleft)
         self.chart1.get_tk_widget().pack(padx=5, pady=5,
                                          side=tk.BOTTOM,
                                          fill=tk.BOTH, expand=True)
 
         self._gCanvas_upright = tk.Frame(self._gF_graphs)
-        self._gCanvas_upright.pack()
         self._gCanvas_upright.place(relx=0.5, rely=0,
                                     relwidth=0.5, relheight=0.5)
         fig = plt.figure(dpi=dpi)
         self.ax2 = fig.add_subplot(111)
+        self.ax2.text(0.1,0.5,"choose file then city to display data", fontsize=10)
         self.chart2 = FigureCanvasTkAgg(fig, self._gCanvas_upright)
         self.chart2.get_tk_widget().pack(padx=5, pady=5,
                                          side=tk.BOTTOM,
@@ -92,6 +92,7 @@ class App:
                                     relwidth=0.5, relheight=0.5)
         fig = plt.figure(dpi=dpi)
         self.ax3 = fig.add_subplot(111)
+        self.ax3.text(0.1,0.5,"choose file then city to display data", fontsize=10)
         self.chart3 = FigureCanvasTkAgg(fig, self._gCanvas_botleft)
         self.chart3.get_tk_widget().pack(padx=5, pady=5,
                                          side=tk.BOTTOM,
@@ -102,6 +103,7 @@ class App:
                                      relwidth=0.5, relheight=0.5)
         fig = plt.figure(dpi=dpi)
         self.ax4 = fig.add_subplot(111)
+        self.ax4.text(0.1,0.5,"choose file then city to display data", fontsize=10)
         self.chart4 = FigureCanvasTkAgg(fig, self._gCanvas_botright)
         self.chart4.get_tk_widget().pack(padx=5, pady=5,
                                          side=tk.BOTTOM,
@@ -143,7 +145,9 @@ class App:
         selected_city = self._gCombo_city.get()
         print(f"Selected city: {selected_city}")
         self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME'] == selected_city]
-# TODO: chart's titles, chart's labels
+        x_axis = 'months [in numbers]'
+        y_axis='energy [kwh]'
+
 
         def upleft(self):
             # UP LEFT FIGURE
@@ -151,6 +155,8 @@ class App:
             janind = self.__subdf.columns.get_loc("KWH JANUARY 2010")
             self.ax1.bar(range(1, 13),
                          (self.__subdf.iloc[:,  range(janind, (janind + 12))]).mean())
+            self.ax1.set_title('KWH average value per month')
+            self.ax1.set_xlabel(x_axis); self.ax1.set_ylabel(y_axis)
             self.chart1.draw()
 
         def upright(self):
@@ -159,6 +165,8 @@ class App:
             janind = self.__subdf.columns.get_loc("THERM JANUARY 2010")
             self.ax2.bar(range(1, 13),
                          (self.__subdf.iloc[:, range(janind, (janind + 12))]).mean())
+            self.ax2.set_title('THERM average value per month')
+            self.ax2.set_xlabel(x_axis); self.ax2.set_ylabel(y_axis)
             self.chart2.draw()
 
         def botleft(self):
@@ -171,6 +179,8 @@ class App:
             self.ax3.plot(range(1, 13),
                     (self.__subdf.iloc[:, range(janind, (janind + 12))]).mean(),
                     color='blue', marker='s')
+            self.ax3.set_title('KWH maximum and min values per month')
+            self.ax3.set_xlabel(x_axis); self.ax3.set_ylabel(y_axis)
             self.chart3.draw()
 
         def botfig(self):
@@ -183,6 +193,8 @@ class App:
             self.ax4.plot(range(1, 13),
                     (self.__subdf.iloc[:,range(janind, (janind + 12))]).mean(),
                     color='blue', marker='s')
+            self.ax4.set_title('THERM max and min values per month')
+            self.ax4.set_xlabel(x_axis); self.ax4.set_ylabel(y_axis)
             self.chart4.draw()
 
         upleft(self)
