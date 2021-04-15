@@ -8,12 +8,15 @@ import tkinter.font as tkFont
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 import os.path
-
+# fit matplotlib charts normally
+from matplotlib import rcParams
+rcParams.update({'figure.autolayout': True})
 
 class App:
     def __init__(self, root):
         # setting title
         root.title("Power histogram maker GUI")
+        
         # get current dpi
         dpi = root.winfo_fpixels('1i')
         print(f"Current dpi is set to {dpi}")
