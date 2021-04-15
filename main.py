@@ -50,7 +50,7 @@ class App:
                                ipadx=10)
 
         # COMBOBOX
-        self._gCombo_city = ttk.Combobox(self._gF_controls)
+        self._gCombo_city = ttk.Combobox(self._gF_controls, state='readonly')
         self._gCombo_city.pack(side=tk.RIGHT)
         self._gCombo_city.bind("<<ComboboxSelected>>",
                                self.hCombo_city_selected)
