@@ -66,7 +66,6 @@ class App:
         # TODO: fake chart with text "no data to graph"
 
         self._gCanvas_upleft = tk.Frame(self._gF_graphs)
-        self._gCanvas_upleft.pack()
         self._gCanvas_upleft.place(relx=0, rely=0,
                                    relwidth=0.5, relheight=0.5)
         fig = plt.figure(dpi=dpi)
@@ -77,7 +76,6 @@ class App:
                                          fill=tk.BOTH, expand=True)
 
         self._gCanvas_upright = tk.Frame(self._gF_graphs)
-        self._gCanvas_upright.pack()
         self._gCanvas_upright.place(relx=0.5, rely=0,
                                     relwidth=0.5, relheight=0.5)
         fig = plt.figure(dpi=dpi)
