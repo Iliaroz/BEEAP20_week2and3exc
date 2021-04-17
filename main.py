@@ -12,6 +12,26 @@ import os.path
 from matplotlib import rcParams
 rcParams.update({'figure.autolayout': True})
 
+
+class DataHandler:
+    #init fun - what inside?
+    def load_file(self, filePath):
+        #how it knows what file to load
+        self.__df = pd.read_csv(filePath)
+        self.__df = self.__df.dropna()
+    def data_community(self):
+        return self.__df['COMMUNITY AREA NAME'].unique()
+    def city(self,  selected_city):
+        self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME']== selected_city]
+        return self.__subdf
+    def kwh_jan(self):
+        janind = self.__subdf.columns.get_loc("KWH JANUARY 2010")
+        return self.__subdf.iloc[:,  range(janind, (janind + 12))]
+    def therm_jan(self):
+        janind = self.__subdf.columns.get_loc("THERM JANUARY 2010")
+        return self.__subdf.iloc[:, range(janind, (janind + 12))]
+
+
 class App:
     def __init__(self, root):
         # setting title
@@ -111,6 +131,8 @@ class App:
         self.chart4.get_tk_widget().pack(padx=5, pady=5,
                                          side=tk.BOTTOM,
                                          fill=tk.BOTH, expand=True)
+        
+        
 
     def hButton_open_command(self):
         filetypes = (
@@ -121,11 +143,12 @@ class App:
                 title='Open a CSV file ...',
                 initialdir='./',
                 filetypes=filetypes)
+        
         if os.path.isfile(filePath):
             try:
-                self.__df = pd.read_csv(filePath)
-                self.__df = self.__df.dropna()
-                vals = list(self.__df['COMMUNITY AREA NAME'].unique())
+                DataHandler.load_file(self, filePath)
+                
+                vals = list(DataHandler.data_community(self))
                 vals.sort()
                 self._gCombo_city['values'] = vals
                 self._gLabel_path["text"] = os.path.basename(filePath)
@@ -147,7 +170,7 @@ class App:
 
         selected_city = self._gCombo_city.get()
         print(f"Selected city: {selected_city}")
-        self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME'] == selected_city]
+        DataHandler.city(self, selected_city)
         x_axis = 'months [in numbers]'
         y_axis='energy [kwh]'
 
@@ -155,9 +178,8 @@ class App:
         def upleft(self):
             # UP LEFT FIGURE
             self.ax1.clear()
-            janind = self.__subdf.columns.get_loc("KWH JANUARY 2010")
             self.ax1.bar(range(1, 13),
-                         (self.__subdf.iloc[:,  range(janind, (janind + 12))]).mean())
+                         (DataHandler.kwh_jan(self)).mean())
             self.ax1.set_title('KWH average value per month')
             self.ax1.set_xlabel(x_axis); self.ax1.set_ylabel(y_axis)
             self.chart1.draw()
@@ -165,9 +187,8 @@ class App:
         def upright(self):
             # UP RIGHT FIGURE
             self.ax2.clear()
-            janind = self.__subdf.columns.get_loc("THERM JANUARY 2010")
             self.ax2.bar(range(1, 13),
-                         (self.__subdf.iloc[:, range(janind, (janind + 12))]).mean())
+                         (DataHandler.therm_jan(self).mean()))
             self.ax2.set_title('THERM average value per month')
             self.ax2.set_xlabel(x_axis); self.ax2.set_ylabel(y_axis)
             self.chart2.draw()
@@ -175,12 +196,11 @@ class App:
         def botleft(self):
             # BOTTOM LEFT FIGURE
             self.ax3.clear()
-            janind = self.__subdf.columns.get_loc("KWH JANUARY 2010")
             self.ax3.plot(range(1, 13),
-                    (self.__subdf.iloc[:, range(janind, (janind + 12))]).max(),
+                    (DataHandler.kwh_jan(self)).max(),
                     color='red', marker ='*')
             self.ax3.plot(range(1, 13),
-                    (self.__subdf.iloc[:, range(janind, (janind + 12))]).mean(),
+                    (DataHandler.kwh_jan(self)).mean(),
                     color='blue', marker='s')
             self.ax3.set_title('KWH maximum and min values per month')
             self.ax3.set_xlabel(x_axis); self.ax3.set_ylabel(y_axis)
@@ -189,12 +209,11 @@ class App:
         def botfig(self):
             # BOTTOM RIGHT FIGURE
             self.ax4.clear()
-            janind = self.__subdf.columns.get_loc("THERM JANUARY 2010")
             self.ax4.plot(range(1, 13),
-                    (self.__subdf.iloc[:,range(janind, (janind + 12))]).max(),
+                    (DataHandler.therm_jan(self)).max(),
                     color='red', marker='*')
             self.ax4.plot(range(1, 13),
-                    (self.__subdf.iloc[:,range(janind, (janind + 12))]).mean(),
+                    (DataHandler.therm_jan(self)).mean(),
                     color='blue', marker='s')
             self.ax4.set_title('THERM max and min values per month')
             self.ax4.set_xlabel(x_axis); self.ax4.set_ylabel(y_axis)
