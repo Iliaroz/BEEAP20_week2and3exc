@@ -39,34 +39,104 @@ TODO:
     5. def getValuesList ( )
         return list of measured values (KWH, THERM, ....)
     
-    7. 
+    6. def getAreasList ( )   ## ugly name
+        return list of values to aggregate (areas, districts..)
 """
 class EnergyData:
+    """
+        Some description of class here
+    """    
+    
     def __init__(self):
-        pass
+        self.__df = pd.DataFrame()
+        self.__subdf = pd.DataFrame()
+        self.__values = ("KWH", "THERM")
+        self.__months = range(1, 13)
     
     
     def loadData(self, data):
-        pass
+        """
+        Improt data from file (or some acceptable data source) 
+        to DataFrame
+        
+        Parameters
+        ----------
+        data : string
+            path to file to load data from.
+
+        Returns
+        -------
+        None.
+
+        """
+        try:
+            self.__df = pd.read_csv(data)
+        except TypeError :
+            self.__df = pd.DataFrame(data)
+            
+        self.__df = self.__df.dropna()
+            
     
     def getValuesList(self):
-        pass
+        return list(self.__values)
+
     
-    def getData_mean(self, city, value, startmonth, endmonth):
-        pass
+    def getMonthsRange(self):
+        return range(1, 13)
+        
+    
+    def getData_mean(self, aggregator, value, startmonth , endmonth):
+        """
+        
+
+        Parameters
+        ----------
+        aggregator : string
+            The value of field for data aggregation.
+            (The name of city district)
+        value : string
+            Group of data to collect. One of element in list given by getValuesList().
+        startmonth : int
+            number of starting month (1..12).
+        endmonth : int
+            number of ending month (1..12).
+
+        Returns
+        -------
+# TODO: numpy or whatever else to return ???
+        DataFrame
+            DataFrame contains mean values.
+
+        """
+        self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME'] == aggregator]
+        janind = self.__subdf.columns.get_loc(value + " JANUARY 2010")
+        if startmonth in self.__months and endmonth in self.__months:
+            return self.__subdf.iloc[:, janind + startmonth - 1 : janind + endmonth  ].mean()
+
     
 
-    def getData_max(self, city, value, startmonth, endmonth):
-        pass
+    def getData_max(self, aggregator, value, startmonth , endmonth):
+        self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME'] == aggregator]
+        janind = self.__subdf.columns.get_loc(value + " JANUARY 2010")
+        if startmonth in self.__months and endmonth in self.__months:
+            return self.__subdf.iloc[:, janind + startmonth - 1 : janind + endmonth  ].max()
     
 
-    def getData_min(self, city, value, startmonth, endmonth):
-        pass
+    def getData_min(self, aggregator, value, startmonth , endmonth):
+        self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME'] == aggregator]
+        janind = self.__subdf.columns.get_loc(value + " JANUARY 2010")
+        if startmonth in self.__months and endmonth in self.__months:
+            return self.__subdf.iloc[:, janind + startmonth - 1 : janind + endmonth  ].min()
     
 
+    def getAreasList (self):   ## ugly name
+        return list(self.__df['COMMUNITY AREA NAME'].unique())
 
 class App:
     def __init__(self, root):
+        
+        self.dataHandler = EnergyData()
+        
         # setting title
         root.title("Power histogram maker GUI")
         
@@ -176,11 +246,15 @@ class App:
                 filetypes=filetypes)
         if os.path.isfile(filePath):
             try:
-                self.__df = pd.read_csv(filePath)
-                self.__df = self.__df.dropna()
-                vals = list(self.__df['COMMUNITY AREA NAME'].unique())
-                vals.sort()
-                self._gCombo_city['values'] = vals
+                # self.__df = pd.read_csv(filePath)
+                # self.__df = self.__df.dropna()
+                self.dataHandler.loadData(filePath)
+                
+                # vals = list(self.__df['COMMUNITY AREA NAME'].unique())
+                areas = self.dataHandler.getAreasList()
+                
+                areas.sort()
+                self._gCombo_city['values'] = areas
                 self._gLabel_path["text"] = os.path.basename(filePath)
             except OSError as err:
                 print(f"Cannot import file {filePath}.\nOS error: {err}\nExit.")
@@ -200,58 +274,92 @@ class App:
 
         selected_city = self._gCombo_city.get()
         print(f"Selected city: {selected_city}")
-        self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME'] == selected_city]
+        # self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME'] == selected_city]
+        # ---
+        
+        values = self.dataHandler.getValuesList()
+        
         x_axis = 'months [in numbers]'
         y_axis='energy [kwh]'
 
 
         def upleft(self):
             # UP LEFT FIGURE
-            self.ax1.clear()
-            janind = self.__subdf.columns.get_loc("KWH JANUARY 2010")
-            self.ax1.bar(range(1, 13),
-                         (self.__subdf.iloc[:,  range(janind, (janind + 12))]).mean())
-            self.ax1.set_title('KWH average value per month')
-            self.ax1.set_xlabel(x_axis); self.ax1.set_ylabel(y_axis)
-            self.chart1.draw()
+            if values[0]:
+                val = values[0]
+                self.ax1.clear()
+                # janind = self.__subdf.columns.get_loc("KWH JANUARY 2010")
+                # self.ax1.bar(range(1, 13),
+                #              (self.__subdf.iloc[:,  range(janind, (janind + 12))]).mean())
+                self.ax1.bar(range(1, 13), 
+                             self.dataHandler.getData_mean(selected_city, val, 1, 12 ))
+                
+                self.ax1.set_title(val + ' average value per month')
+                self.ax1.set_xlabel(x_axis); self.ax1.set_ylabel(y_axis)
+                self.chart1.draw()
 
         def upright(self):
             # UP RIGHT FIGURE
-            self.ax2.clear()
-            janind = self.__subdf.columns.get_loc("THERM JANUARY 2010")
-            self.ax2.bar(range(1, 13),
-                         (self.__subdf.iloc[:, range(janind, (janind + 12))]).mean())
-            self.ax2.set_title('THERM average value per month')
-            self.ax2.set_xlabel(x_axis); self.ax2.set_ylabel(y_axis)
-            self.chart2.draw()
+            
+            if values[1]:
+                val = values[1]
+                self.ax2.clear()
+                # janind = self.__subdf.columns.get_loc("THERM JANUARY 2010")
+                # self.ax2.bar(range(1, 13),
+                #              (self.__subdf.iloc[:, range(janind, (janind + 12))]).mean())
+                self.ax2.bar(range(1, 13), 
+                             self.dataHandler.getData_mean(selected_city, val, 1, 12 ))
+                
+                
+                self.ax2.set_title(val + ' average value per month')
+                self.ax2.set_xlabel(x_axis); self.ax2.set_ylabel(y_axis)
+                self.chart2.draw()
 
         def botleft(self):
             # BOTTOM LEFT FIGURE
-            self.ax3.clear()
-            janind = self.__subdf.columns.get_loc("KWH JANUARY 2010")
-            self.ax3.plot(range(1, 13),
-                    (self.__subdf.iloc[:, range(janind, (janind + 12))]).max(),
-                    color='red', marker ='*')
-            self.ax3.plot(range(1, 13),
-                    (self.__subdf.iloc[:, range(janind, (janind + 12))]).mean(),
-                    color='blue', marker='s')
-            self.ax3.set_title('KWH maximum and min values per month')
-            self.ax3.set_xlabel(x_axis); self.ax3.set_ylabel(y_axis)
-            self.chart3.draw()
+            if values[0]:
+                val = values[0]
+                self.ax3.clear()
+                # janind = self.__subdf.columns.get_loc("KWH JANUARY 2010")
+                # self.ax3.plot(range(1, 13),
+                #         (self.__subdf.iloc[:, range(janind, (janind + 12))]).max(),
+                #         color='red', marker ='*')
+                # self.ax3.plot(range(1, 13),
+                #         (self.__subdf.iloc[:, range(janind, (janind + 12))]).mean(),
+                #         color='blue', marker='s')
+                self.ax3.plot(range(1, 13), 
+                        self.dataHandler.getData_max(selected_city, val, 1, 12 ),
+                        color='red', marker ='*')
+                self.ax3.plot(range(1, 13),
+                        self.dataHandler.getData_mean(selected_city, val, 1, 12 ),
+                        color='blue', marker='s')
+                
+                self.ax3.set_title(val + ' maximum and mean values per month')
+                self.ax3.set_xlabel(x_axis); self.ax3.set_ylabel(y_axis)
+                self.chart3.draw()
 
         def botfig(self):
             # BOTTOM RIGHT FIGURE
-            self.ax4.clear()
-            janind = self.__subdf.columns.get_loc("THERM JANUARY 2010")
-            self.ax4.plot(range(1, 13),
-                    (self.__subdf.iloc[:,range(janind, (janind + 12))]).max(),
-                    color='red', marker='*')
-            self.ax4.plot(range(1, 13),
-                    (self.__subdf.iloc[:,range(janind, (janind + 12))]).mean(),
-                    color='blue', marker='s')
-            self.ax4.set_title('THERM max and min values per month')
-            self.ax4.set_xlabel(x_axis); self.ax4.set_ylabel(y_axis)
-            self.chart4.draw()
+            if values[1]:
+                val = values[1]
+                self.ax4.clear()
+                # janind = self.__subdf.columns.get_loc("THERM JANUARY 2010")
+                # self.ax4.plot(range(1, 13),
+                #         (self.__subdf.iloc[:,range(janind, (janind + 12))]).max(),
+                #         color='red', marker='*')
+                # self.ax4.plot(range(1, 13),
+                #         (self.__subdf.iloc[:,range(janind, (janind + 12))]).mean(),
+                #         color='blue', marker='s')
+                self.ax4.plot(range(1, 13), 
+                        self.dataHandler.getData_max(selected_city, val, 1, 12 ),
+                        color='red', marker ='*')
+                self.ax4.plot(range(1, 13),
+                        self.dataHandler.getData_mean(selected_city, val, 1, 12 ),
+                        color='blue', marker='s')
+                
+                self.ax4.set_title(val + ' max and min values per month')
+                self.ax4.set_xlabel(x_axis); self.ax4.set_ylabel(y_axis)
+                self.chart4.draw()
 
         upleft(self)
         upright(self)
