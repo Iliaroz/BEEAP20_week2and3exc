@@ -47,7 +47,6 @@ class DataHandler:
     def range_plot(self, from_month, to_month):
         start = self.__subdf.columns.get_loc("THERM " + from_month + " 2010")
         end = self.__subdf.columns.get_loc("THERM " + to_month + " 2010")+2
-        print(start, end)
         return range(1, end-start)
 
 class App:
@@ -189,13 +188,14 @@ class App:
         
         from_month = "FEBRUARY"
         to_month = "JULY"
+        #name of x-axis according to months selection
         x_axis = f'months [from {from_month} to {to_month}]'
         y_axis='energy [kwh]'
 
         def upleft(self):
             # UP LEFT FIGURE
             self.ax1.clear()
-            self.ax1.bar(DataHandler.range_plot(self, from_month, to_month),#WHEN ex.March i need to change range - do range changeble
+            self.ax1.bar(DataHandler.range_plot(self, from_month, to_month),#set range for selected months
                          (DataHandler.kwh(self, from_month, to_month).mean()))
             self.ax1.set_title('KWH average value per month')
             self.ax1.set_xlabel(x_axis); self.ax1.set_ylabel(y_axis)
