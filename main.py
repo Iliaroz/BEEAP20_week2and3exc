@@ -198,7 +198,7 @@ class App:
             # UP RIGHT FIGURE
             self.ax2.clear()
             self.ax2.bar(range(1, 13),
-                         (DataHandler.therm(self).mean()))
+                         (DataHandler.therm(self,from_month,to_month).mean()))
             self.ax2.set_title('THERM average value per month')
             self.ax2.set_xlabel(x_axis); self.ax2.set_ylabel(y_axis)
             self.chart2.draw()
@@ -220,10 +220,10 @@ class App:
             # BOTTOM RIGHT FIGURE
             self.ax4.clear()
             self.ax4.plot(range(1, 13),
-                    (DataHandler.therm(self)).max(),
+                    (DataHandler.therm(self,from_month,to_month).max()),
                     color='red', marker='*')
             self.ax4.plot(range(1, 13),
-                    (DataHandler.therm(self)).mean(),
+                    (DataHandler.therm(self,from_month,to_month).mean()),
                     color='blue', marker='s')
             self.ax4.set_title('THERM max and min values per month')
             self.ax4.set_xlabel(x_axis); self.ax4.set_ylabel(y_axis)
