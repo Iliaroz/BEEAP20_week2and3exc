@@ -16,20 +16,30 @@ rcParams.update({'figure.autolayout': True})
 class DataHandler:
     #init fun - what inside?
     def load_file(self, filePath):
-        #how it knows what file to load
         self.__df = pd.read_csv(filePath)
         self.__df = self.__df.dropna()
-    def data_community(self):
-        return self.__df['COMMUNITY AREA NAME'].unique()
-    def city(self,  selected_city):
+        
+        
+    def list_cities(self):
+        vals = list(self.__df['COMMUNITY AREA NAME'].unique())
+        vals.sort()
+        return vals
+    
+    
+    def data_city(self,  selected_city):#displays data for chosen city
         self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME']== selected_city]
         return self.__subdf
-    def kwh_jan(self):
-        janind = self.__subdf.columns.get_loc("KWH JANUARY 2010")
-        return self.__subdf.iloc[:,  range(janind, (janind + 12))]
-    def therm_jan(self):
-        janind = self.__subdf.columns.get_loc("THERM JANUARY 2010")
-        return self.__subdf.iloc[:, range(janind, (janind + 12))]
+    
+    
+    def kwh(self, from_month, to_month):#display kwh columns for selected city
+        start = self.__subdf.columns.get_loc("KWH " + from_month + " 2010")
+        end = self.__subdf.columns.get_loc("KWH " + to_month + " 2010")+1
+        return self.__subdf.iloc[:,  range(start, end)]
+    
+    
+    def therm(self, month_name):#display therm columns for selected city
+        month = self.__subdf.columns.get_loc("THERM " + month_name + " 2010")
+        return self.__subdf.iloc[:, range(month, (month + 12))]
 
 
 class App:
@@ -147,10 +157,8 @@ class App:
         if os.path.isfile(filePath):
             try:
                 DataHandler.load_file(self, filePath)
-                
-                vals = list(DataHandler.data_community(self))
-                vals.sort()
-                self._gCombo_city['values'] = vals
+                                
+                self._gCombo_city['values'] = DataHandler.list_cities(self)
                 self._gLabel_path["text"] = os.path.basename(filePath)
             except OSError as err:
                 print(f"Cannot import file {filePath}.\nOS error: {err}\nExit.")
@@ -170,16 +178,17 @@ class App:
 
         selected_city = self._gCombo_city.get()
         print(f"Selected city: {selected_city}")
-        DataHandler.city(self, selected_city)
+        DataHandler.data_city(self, selected_city)
         x_axis = 'months [in numbers]'
         y_axis='energy [kwh]'
-
+        from_month = "JANUARY"
+        to_month = "MARCH"
 
         def upleft(self):
             # UP LEFT FIGURE
             self.ax1.clear()
-            self.ax1.bar(range(1, 13),
-                         (DataHandler.kwh_jan(self)).mean())
+            self.ax1.bar(range(1, 4),
+                         (DataHandler.kwh(self, from_month, to_month).mean()))
             self.ax1.set_title('KWH average value per month')
             self.ax1.set_xlabel(x_axis); self.ax1.set_ylabel(y_axis)
             self.chart1.draw()
@@ -188,7 +197,7 @@ class App:
             # UP RIGHT FIGURE
             self.ax2.clear()
             self.ax2.bar(range(1, 13),
-                         (DataHandler.therm_jan(self).mean()))
+                         (DataHandler.therm(self).mean()))
             self.ax2.set_title('THERM average value per month')
             self.ax2.set_xlabel(x_axis); self.ax2.set_ylabel(y_axis)
             self.chart2.draw()
@@ -197,10 +206,10 @@ class App:
             # BOTTOM LEFT FIGURE
             self.ax3.clear()
             self.ax3.plot(range(1, 13),
-                    (DataHandler.kwh_jan(self)).max(),
+                    (DataHandler.kwh(self, from_month, to_month).max()),
                     color='red', marker ='*')
             self.ax3.plot(range(1, 13),
-                    (DataHandler.kwh_jan(self)).mean(),
+                    (DataHandler.kwh(self, from_month, to_month).mean()),
                     color='blue', marker='s')
             self.ax3.set_title('KWH maximum and min values per month')
             self.ax3.set_xlabel(x_axis); self.ax3.set_ylabel(y_axis)
@@ -210,10 +219,10 @@ class App:
             # BOTTOM RIGHT FIGURE
             self.ax4.clear()
             self.ax4.plot(range(1, 13),
-                    (DataHandler.therm_jan(self)).max(),
+                    (DataHandler.therm(self)).max(),
                     color='red', marker='*')
             self.ax4.plot(range(1, 13),
-                    (DataHandler.therm_jan(self)).mean(),
+                    (DataHandler.therm(self)).mean(),
                     color='blue', marker='s')
             self.ax4.set_title('THERM max and min values per month')
             self.ax4.set_xlabel(x_axis); self.ax4.set_ylabel(y_axis)
