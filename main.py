@@ -12,6 +12,37 @@ import os.path
 from matplotlib import rcParams
 rcParams.update({'figure.autolayout': True})
 
+"""
+Division into classes, dataclass todos
+
+TODO:
+    1. def loadfile( filepath )
+        
+        Load data from file. 
+        
+        
+    2. def get_mean_data ( city , value , startmonth , endmonth )
+        
+        get mean data for selected city(es) and period
+        
+        
+    3. def get_max_data ( city , value , startmonth , endmonth )
+        
+        get max data for selected city(es) and period
+        
+        
+    4. def get_min_data ( city , value , startmonth , endmonth )
+        
+        get min data for selected city(es) and period
+        
+        
+    5. def getValuesList ( )
+        return list of measured values (KWH, THERM, ....)
+    
+    7. 
+"""
+
+
 class App:
     def __init__(self, root):
         # setting title
