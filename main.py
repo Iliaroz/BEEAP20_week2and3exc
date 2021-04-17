@@ -21,17 +21,17 @@ TODO:
         Load data from file. 
         
         
-    2. def get_mean_data ( city , value , startmonth , endmonth )
+    2. def getData_mean ( city , value , startmonth , endmonth )
         
         get mean data for selected city(es) and period
         
         
-    3. def get_max_data ( city , value , startmonth , endmonth )
+    3. def getData_max ( city , value , startmonth , endmonth )
         
         get max data for selected city(es) and period
         
         
-    4. def get_min_data ( city , value , startmonth , endmonth )
+    4. def getData_min ( city , value , startmonth , endmonth )
         
         get min data for selected city(es) and period
         
@@ -41,6 +41,28 @@ TODO:
     
     7. 
 """
+class EnergyData:
+    def __init__(self):
+        pass
+    
+    
+    def loadData(self, data):
+        pass
+    
+    def getValuesList(self):
+        pass
+    
+    def getData_mean(self, city, value, startmonth, endmonth):
+        pass
+    
+
+    def getData_max(self, city, value, startmonth, endmonth):
+        pass
+    
+
+    def getData_min(self, city, value, startmonth, endmonth):
+        pass
+    
 
 
 class App:
