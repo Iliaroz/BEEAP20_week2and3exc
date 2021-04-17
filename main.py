@@ -12,36 +12,6 @@ import os.path
 from matplotlib import rcParams
 rcParams.update({'figure.autolayout': True})
 
-"""
-Division into classes, dataclass todos
-
-TODO:
-    1. def loadfile( filepath )
-        
-        Load data from file. 
-        
-        
-    2. def getData_mean ( city , value , startmonth , endmonth )
-        
-        get mean data for selected city(es) and period
-        
-        
-    3. def getData_max ( city , value , startmonth , endmonth )
-        
-        get max data for selected city(es) and period
-        
-        
-    4. def getData_min ( city , value , startmonth , endmonth )
-        
-        get min data for selected city(es) and period
-        
-        
-    5. def getValuesList ( )
-        return list of measured values (KWH, THERM, ....)
-    
-    6. def getAreasList ( )   ## ugly name
-        return list of values to aggregate (areas, districts..)
-"""
 class EnergyData:
     """
         Some description of class here
@@ -85,6 +55,13 @@ class EnergyData:
         return range(1, 13)
         
     
+    def __getData(self, aggregator, value, startmonth , endmonth):
+        self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME'] == aggregator]
+        janind = self.__subdf.columns.get_loc(value + " JANUARY 2010")
+        if startmonth in self.__months and endmonth in self.__months:
+            return self.__subdf.iloc[:, janind + startmonth - 1 : janind + endmonth  ]
+    
+    
     def getData_mean(self, aggregator, value, startmonth , endmonth):
         """
         
@@ -103,34 +80,30 @@ class EnergyData:
 
         Returns
         -------
-# TODO: numpy or whatever else to return ???
+        # TODO: numpy or whatever else to return ???
         DataFrame
             DataFrame contains mean values.
 
         """
-        self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME'] == aggregator]
-        janind = self.__subdf.columns.get_loc(value + " JANUARY 2010")
         if startmonth in self.__months and endmonth in self.__months:
-            return self.__subdf.iloc[:, janind + startmonth - 1 : janind + endmonth  ].mean()
+            return self.__getData(aggregator, value, startmonth , endmonth).mean()
 
     
 
     def getData_max(self, aggregator, value, startmonth , endmonth):
-        self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME'] == aggregator]
-        janind = self.__subdf.columns.get_loc(value + " JANUARY 2010")
         if startmonth in self.__months and endmonth in self.__months:
-            return self.__subdf.iloc[:, janind + startmonth - 1 : janind + endmonth  ].max()
+            return self.__getData(aggregator, value, startmonth , endmonth).max()
     
 
     def getData_min(self, aggregator, value, startmonth , endmonth):
-        self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME'] == aggregator]
-        janind = self.__subdf.columns.get_loc(value + " JANUARY 2010")
         if startmonth in self.__months and endmonth in self.__months:
-            return self.__subdf.iloc[:, janind + startmonth - 1 : janind + endmonth  ].min()
+            return self.__getData(aggregator, value, startmonth , endmonth).min()
     
 
     def getAreasList (self):   ## ugly name
         return list(self.__df['COMMUNITY AREA NAME'].unique())
+
+
 
 class App:
     def __init__(self, root):
@@ -288,9 +261,6 @@ class App:
             if values[0]:
                 val = values[0]
                 self.ax1.clear()
-                # janind = self.__subdf.columns.get_loc("KWH JANUARY 2010")
-                # self.ax1.bar(range(1, 13),
-                #              (self.__subdf.iloc[:,  range(janind, (janind + 12))]).mean())
                 self.ax1.bar(range(1, 13), 
                              self.dataHandler.getData_mean(selected_city, val, 1, 12 ))
                 
@@ -304,13 +274,8 @@ class App:
             if values[1]:
                 val = values[1]
                 self.ax2.clear()
-                # janind = self.__subdf.columns.get_loc("THERM JANUARY 2010")
-                # self.ax2.bar(range(1, 13),
-                #              (self.__subdf.iloc[:, range(janind, (janind + 12))]).mean())
                 self.ax2.bar(range(1, 13), 
                              self.dataHandler.getData_mean(selected_city, val, 1, 12 ))
-                
-                
                 self.ax2.set_title(val + ' average value per month')
                 self.ax2.set_xlabel(x_axis); self.ax2.set_ylabel(y_axis)
                 self.chart2.draw()
@@ -320,20 +285,12 @@ class App:
             if values[0]:
                 val = values[0]
                 self.ax3.clear()
-                # janind = self.__subdf.columns.get_loc("KWH JANUARY 2010")
-                # self.ax3.plot(range(1, 13),
-                #         (self.__subdf.iloc[:, range(janind, (janind + 12))]).max(),
-                #         color='red', marker ='*')
-                # self.ax3.plot(range(1, 13),
-                #         (self.__subdf.iloc[:, range(janind, (janind + 12))]).mean(),
-                #         color='blue', marker='s')
                 self.ax3.plot(range(1, 13), 
                         self.dataHandler.getData_max(selected_city, val, 1, 12 ),
                         color='red', marker ='*')
                 self.ax3.plot(range(1, 13),
                         self.dataHandler.getData_mean(selected_city, val, 1, 12 ),
                         color='blue', marker='s')
-                
                 self.ax3.set_title(val + ' maximum and mean values per month')
                 self.ax3.set_xlabel(x_axis); self.ax3.set_ylabel(y_axis)
                 self.chart3.draw()
@@ -343,20 +300,12 @@ class App:
             if values[1]:
                 val = values[1]
                 self.ax4.clear()
-                # janind = self.__subdf.columns.get_loc("THERM JANUARY 2010")
-                # self.ax4.plot(range(1, 13),
-                #         (self.__subdf.iloc[:,range(janind, (janind + 12))]).max(),
-                #         color='red', marker='*')
-                # self.ax4.plot(range(1, 13),
-                #         (self.__subdf.iloc[:,range(janind, (janind + 12))]).mean(),
-                #         color='blue', marker='s')
                 self.ax4.plot(range(1, 13), 
                         self.dataHandler.getData_max(selected_city, val, 1, 12 ),
                         color='red', marker ='*')
                 self.ax4.plot(range(1, 13),
                         self.dataHandler.getData_mean(selected_city, val, 1, 12 ),
                         color='blue', marker='s')
-                
                 self.ax4.set_title(val + ' max and min values per month')
                 self.ax4.set_xlabel(x_axis); self.ax4.set_ylabel(y_axis)
                 self.chart4.draw()
