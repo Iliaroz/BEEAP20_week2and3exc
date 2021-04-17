@@ -27,7 +27,7 @@ class DataHandler:
     
     
     def data_city(self,  selected_city):#displays data for chosen city
-        self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME']== selected_city]
+        self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME']== selected_city].rename(columns={"TERM APRIL 2010":"THERM APRIL 2010"})
         return self.__subdf
     
     
@@ -37,9 +37,10 @@ class DataHandler:
         return self.__subdf.iloc[:,  range(start, end)]
     
     
-    def therm(self, month_name):#display therm columns for selected city
-        month = self.__subdf.columns.get_loc("THERM " + month_name + " 2010")
-        return self.__subdf.iloc[:, range(month, (month + 12))]
+    def therm(self, from_month, to_month):#display kwh columns for selected city
+        start = self.__subdf.columns.get_loc("THERM " + from_month + " 2010")
+        end = self.__subdf.columns.get_loc("THERM " + to_month + " 2010")+1
+        return self.__subdf.iloc[:,  range(start, end)]
 
 
 class App:
@@ -182,12 +183,12 @@ class App:
         x_axis = 'months [in numbers]'
         y_axis='energy [kwh]'
         from_month = "JANUARY"
-        to_month = "MARCH"
+        to_month = "DECEMBER"
 
         def upleft(self):
             # UP LEFT FIGURE
             self.ax1.clear()
-            self.ax1.bar(range(1, 4),
+            self.ax1.bar(range(1, 13),#WHEN ex.March i need to change range - do range changeble
                          (DataHandler.kwh(self, from_month, to_month).mean()))
             self.ax1.set_title('KWH average value per month')
             self.ax1.set_xlabel(x_axis); self.ax1.set_ylabel(y_axis)
