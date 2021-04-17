@@ -26,7 +26,9 @@ class DataHandler:
         return vals
     
     
-    def data_city(self,  selected_city):#displays data for chosen city
+    def data_city(self):#displays data for chosen city
+        selected_city = self._gCombo_city.get()
+        print(f"Selected city: {selected_city}")
         self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME']== selected_city].rename(columns={"TERM APRIL 2010":"THERM APRIL 2010"})
         return self.__subdf
     
@@ -182,9 +184,8 @@ class App:
     # bottom left and bottom right up to you
     def hCombo_city_selected(self, event=None):
 
-        selected_city = self._gCombo_city.get()
-        print(f"Selected city: {selected_city}")
-        DataHandler.data_city(self, selected_city)
+        
+        DataHandler.data_city(self)
         
         from_month = "FEBRUARY"
         to_month = "JULY"
