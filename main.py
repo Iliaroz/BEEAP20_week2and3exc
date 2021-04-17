@@ -185,10 +185,11 @@ class App:
         selected_city = self._gCombo_city.get()
         print(f"Selected city: {selected_city}")
         DataHandler.data_city(self, selected_city)
-        x_axis = 'months [in numbers]'
+        
+        from_month = "FEBRUARY"
+        to_month = "JULY"
+        x_axis = f'months [from {from_month} to {to_month}]'
         y_axis='energy [kwh]'
-        from_month = "JANUARY"
-        to_month = "MARCH"
 
         def upleft(self):
             # UP LEFT FIGURE
