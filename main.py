@@ -132,43 +132,42 @@ class App:
                 filetypes=filetypes)
         
         if os.path.isfile(filePath):
-            #try:
+            try:
+                #LOAD FILE
                 self.DataHandler.load_file(filePath)
-                                
+                #DISPLAY CITIES IN COMBOBOX AND PUT FILE NAME ON LABEL
                 self._gCombo_city['values'] = self.DataHandler.list_cities()
                 self._gLabel_path["text"] = os.path.basename(filePath)
-           # except OSError as err:
-                #print(f"Cannot import file {filePath}.\nOS error: {err}\nExit.")
+            except OSError as err:
+                print(f"Cannot import file {filePath}.\nOS error: {err}\nExit.")
                 # TODO:  show some gui error about file
-           # except:
-                #print("Some error happend during opening csv file")
+            except:
+                print("Some error happend during opening csv file")
                 # TODO: show some gui error message
         else:
             print("No file selected. (or not ordinary file selected)")
 
-    # desired behavior: select one area,
-    # show 4 plots drawn on 4 canvases of that area:
-    # top left: bar chart, average KWH by month
-    # top right: bar chart, average THERM by month
-    # bottom left and bottom right up to you
+   
     def hCombo_city_selected(self, event=None):
         selected_city = self._gCombo_city.get()
         print(f"Selected city: {selected_city}")
-       # self.DataHandler.data_city(selected_city)
-        
+       
+        #SELECT MONTHS FOR DATA TO BE DISPLAYED
         from_month = 4
         to_month = 12
-        #name of x-axis according to months selection
+        #NAME OF X-AXIS ACCORDING TO MONTH SELECTION
         x_axis = f'months [from {from_month} to {to_month}]'
         y_axis='energy [kwh]'
         
-        def range_plot(self, from_month, to_month):#arrange the range size for chosen months
+        #SET RANGE FOR DATA
+        def range_plot(self, from_month, to_month):
             return range(from_month, to_month+1)
-
+        
+        #PLOT CHARTS
         def upleft(self):
             # UP LEFT FIGURE
             self.ax1.clear()
-            self.ax1.bar(range_plot(self,from_month, to_month),#set range for selected months
+            self.ax1.bar(range_plot(self,from_month, to_month),
                          (self.DataHandler.kwh(from_month, to_month,selected_city).mean()))
             self.ax1.set_title('KWH average value per month')
             self.ax1.set_xlabel(x_axis); self.ax1.set_ylabel(y_axis)
@@ -192,7 +191,7 @@ class App:
             self.ax3.plot(range_plot(self,from_month, to_month),
                     (self.DataHandler.kwh(from_month, to_month,selected_city).mean()),
                     color='blue', marker='s')
-            self.ax3.set_title('KWH maximum and min values per month')
+            self.ax3.set_title('KWH max and mean values per month')
             self.ax3.set_xlabel(x_axis); self.ax3.set_ylabel(y_axis)
             self.chart3.draw()
 
@@ -205,7 +204,7 @@ class App:
             self.ax4.plot(range_plot(self,from_month, to_month),
                     (self.DataHandler.therm(from_month,to_month,selected_city).mean()),
                     color='blue', marker='s')
-            self.ax4.set_title('THERM max and min values per month')
+            self.ax4.set_title('THERM max and mean values per month')
             self.ax4.set_xlabel(x_axis); self.ax4.set_ylabel(y_axis)
             self.chart4.draw()
 
