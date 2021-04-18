@@ -152,18 +152,16 @@ class App:
     def hCombo_city_selected(self, event=None):
         selected_city = self._gCombo_city.get()
         print(f"Selected city: {selected_city}")
-        self.DataHandler.data_city(selected_city)
+       # self.DataHandler.data_city(selected_city)
         
-        from_month = "FEBRUARY"
-        to_month = "JULY"
+        from_month = 4
+        to_month = 12
         #name of x-axis according to months selection
         x_axis = f'months [from {from_month} to {to_month}]'
         y_axis='energy [kwh]'
         
         def range_plot(self, from_month, to_month,selected_city):#arrange the range size for chosen months
-            start =  self.DataHandler.data_city(selected_city).columns.get_loc("THERM " + from_month + " 2010")
-            end =  self.DataHandler.data_city(selected_city).columns.get_loc("THERM " + to_month + " 2010")+2
-            return range(1, end-start)
+            return range(from_month, to_month+1)
 
         def upleft(self):
             # UP LEFT FIGURE

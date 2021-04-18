@@ -22,15 +22,17 @@ class DataHandler:
         return self.__subdf
     
     
-    def kwh(self, from_month, to_month, selected_city):#display kwh data for selected city
-        start = self.data_city(selected_city).columns.get_loc("KWH " + from_month + " 2010")
-        end = self.data_city(selected_city).columns.get_loc("KWH " + to_month + " 2010")+1
-        return self.data_city(selected_city).iloc[:,  range(start, end)]
+    def kwh(self,from_month, to_month, selected_city):#display kwh data for selected city
+        janind = self.data_city(selected_city).columns.get_loc("KWH JANUARY 2010")
+        start = janind+from_month-1
+        end = janind+to_month
+        return self.data_city(selected_city).iloc[:,  range(start,end)]
     
     
     def therm(self, from_month, to_month, selected_city):#display therm data for selected city
-        start = self.data_city(selected_city).columns.get_loc("THERM " + from_month + " 2010")
-        end = self.data_city(selected_city).columns.get_loc("THERM " + to_month + " 2010")+1
-        return self.data_city(selected_city).iloc[:,  range(start, end)]
+        janind = self.data_city(selected_city).columns.get_loc("THERM JANUARY 2010")
+        start = janind+from_month-1
+        end = janind+to_month
+        return self.data_city(selected_city).iloc[:,  range(start,end)]
     
    
