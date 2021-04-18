@@ -6,7 +6,7 @@ from tkinter import filedialog as fd
 import tkinter.font as tkFont
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import DataHandler
+import DataHandler as dh
 import os.path
 # fit matplotlib charts normally
 from matplotlib import rcParams
@@ -17,7 +17,7 @@ rcParams.update({'figure.autolayout': True})
 
 class App:
     def __init__(self, root):
-                
+        self.DataHandler = dh.DataHandler()
         
         # setting title
         root.title("Power histogram maker GUI")
@@ -130,16 +130,16 @@ class App:
                 filetypes=filetypes)
         
         if os.path.isfile(filePath):
-            try:
+            #try:
                 self.DataHandler.load_file(filePath)
                                 
-                self._gCombo_city['values'] = self.DataHandler.list_cities(self)
+                self._gCombo_city['values'] = self.DataHandler.list_cities()
                 self._gLabel_path["text"] = os.path.basename(filePath)
-            except OSError as err:
-                print(f"Cannot import file {filePath}.\nOS error: {err}\nExit.")
+           # except OSError as err:
+                #print(f"Cannot import file {filePath}.\nOS error: {err}\nExit.")
                 # TODO:  show some gui error about file
-            except:
-                print("Some error happend during opening csv file")
+           # except:
+                #print("Some error happend during opening csv file")
                 # TODO: show some gui error message
         else:
             print("No file selected. (or not ordinary file selected)")
@@ -150,21 +150,26 @@ class App:
     # top right: bar chart, average THERM by month
     # bottom left and bottom right up to you
     def hCombo_city_selected(self, event=None):
-
-        
-        DataHandler.data_city(self)
+        selected_city = self._gCombo_city.get()
+        print(f"Selected city: {selected_city}")
+        self.DataHandler.data_city(selected_city)
         
         from_month = "FEBRUARY"
         to_month = "JULY"
         #name of x-axis according to months selection
         x_axis = f'months [from {from_month} to {to_month}]'
         y_axis='energy [kwh]'
+        
+        def range_plot(self, from_month, to_month,selected_city):#arrange the range size for chosen months
+            start =  self.DataHandler.data_city(selected_city).columns.get_loc("THERM " + from_month + " 2010")
+            end =  self.DataHandler.data_city(selected_city).columns.get_loc("THERM " + to_month + " 2010")+2
+            return range(1, end-start)
 
         def upleft(self):
             # UP LEFT FIGURE
             self.ax1.clear()
-            self.ax1.bar(DataHandler.range_plot(self, from_month, to_month),#set range for selected months
-                         (DataHandler.kwh(self, from_month, to_month).mean()))
+            self.ax1.bar(range_plot(self,from_month, to_month,selected_city),#set range for selected months
+                         (self.DataHandler.kwh(from_month, to_month,selected_city).mean()))
             self.ax1.set_title('KWH average value per month')
             self.ax1.set_xlabel(x_axis); self.ax1.set_ylabel(y_axis)
             self.chart1.draw()
@@ -172,8 +177,8 @@ class App:
         def upright(self):
             # UP RIGHT FIGURE
             self.ax2.clear()
-            self.ax2.bar(DataHandler.range_plot(self, from_month, to_month),
-                         (DataHandler.therm(self,from_month,to_month).mean()))
+            self.ax2.bar(range_plot(self,from_month, to_month,selected_city),
+                         (self.DataHandler.therm(from_month,to_month,selected_city).mean()))
             self.ax2.set_title('THERM average value per month')
             self.ax2.set_xlabel(x_axis); self.ax2.set_ylabel(y_axis)
             self.chart2.draw()
@@ -181,11 +186,11 @@ class App:
         def botleft(self):
             # BOTTOM LEFT FIGURE
             self.ax3.clear()
-            self.ax3.plot(DataHandler.range_plot(self, from_month, to_month),
-                    (DataHandler.kwh(self, from_month, to_month).max()),
+            self.ax3.plot(range_plot(self,from_month, to_month,selected_city),
+                    (self.DataHandler.kwh(from_month, to_month,selected_city).max()),
                     color='red', marker ='*')
-            self.ax3.plot(DataHandler.range_plot(self, from_month, to_month),
-                    (DataHandler.kwh(self, from_month, to_month).mean()),
+            self.ax3.plot(range_plot(self,from_month, to_month,selected_city),
+                    (self.DataHandler.kwh(from_month, to_month,selected_city).mean()),
                     color='blue', marker='s')
             self.ax3.set_title('KWH maximum and min values per month')
             self.ax3.set_xlabel(x_axis); self.ax3.set_ylabel(y_axis)
@@ -194,11 +199,11 @@ class App:
         def botfig(self):
             # BOTTOM RIGHT FIGURE
             self.ax4.clear()
-            self.ax4.plot(DataHandler.range_plot(self, from_month, to_month),
-                    (DataHandler.therm(self,from_month,to_month).max()),
+            self.ax4.plot(range_plot(self,from_month, to_month,selected_city),
+                    (self.DataHandler.therm(from_month,to_month,selected_city).max()),
                     color='red', marker='*')
-            self.ax4.plot(DataHandler.range_plot(self, from_month, to_month),
-                    (DataHandler.therm(self,from_month,to_month).mean()),
+            self.ax4.plot(range_plot(self,from_month, to_month,selected_city),
+                    (self.DataHandler.therm(from_month,to_month,selected_city).mean()),
                     color='blue', marker='s')
             self.ax4.set_title('THERM max and min values per month')
             self.ax4.set_xlabel(x_axis); self.ax4.set_ylabel(y_axis)
@@ -213,6 +218,7 @@ class App:
 def main():
     root = tk.Tk()
     app = App(root)
+       
     root.geometry("800x600")
 
     # setting in True  enable to resize window when displayed
