@@ -1,4 +1,3 @@
-import pandas as pd
 import matplotlib.pyplot as plt
 import tkinter as tk
 from tkinter import ttk
@@ -8,6 +7,8 @@ import tkinter.font as tkFont
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import DataHandler as dh
 import os.path
+
+
 # fit matplotlib charts normally
 from matplotlib import rcParams
 rcParams.update({'figure.autolayout': True})
@@ -17,6 +18,7 @@ rcParams.update({'figure.autolayout': True})
 
 class App:
     def __init__(self, root):
+        # DataHandler instance
         self.DataHandler = dh.DataHandler()
         
         # setting title
@@ -160,13 +162,13 @@ class App:
         x_axis = f'months [from {from_month} to {to_month}]'
         y_axis='energy [kwh]'
         
-        def range_plot(self, from_month, to_month,selected_city):#arrange the range size for chosen months
+        def range_plot(self, from_month, to_month):#arrange the range size for chosen months
             return range(from_month, to_month+1)
 
         def upleft(self):
             # UP LEFT FIGURE
             self.ax1.clear()
-            self.ax1.bar(range_plot(self,from_month, to_month,selected_city),#set range for selected months
+            self.ax1.bar(range_plot(self,from_month, to_month),#set range for selected months
                          (self.DataHandler.kwh(from_month, to_month,selected_city).mean()))
             self.ax1.set_title('KWH average value per month')
             self.ax1.set_xlabel(x_axis); self.ax1.set_ylabel(y_axis)
@@ -175,7 +177,7 @@ class App:
         def upright(self):
             # UP RIGHT FIGURE
             self.ax2.clear()
-            self.ax2.bar(range_plot(self,from_month, to_month,selected_city),
+            self.ax2.bar(range_plot(self,from_month, to_month),
                          (self.DataHandler.therm(from_month,to_month,selected_city).mean()))
             self.ax2.set_title('THERM average value per month')
             self.ax2.set_xlabel(x_axis); self.ax2.set_ylabel(y_axis)
@@ -184,10 +186,10 @@ class App:
         def botleft(self):
             # BOTTOM LEFT FIGURE
             self.ax3.clear()
-            self.ax3.plot(range_plot(self,from_month, to_month,selected_city),
+            self.ax3.plot(range_plot(self,from_month, to_month),
                     (self.DataHandler.kwh(from_month, to_month,selected_city).max()),
                     color='red', marker ='*')
-            self.ax3.plot(range_plot(self,from_month, to_month,selected_city),
+            self.ax3.plot(range_plot(self,from_month, to_month),
                     (self.DataHandler.kwh(from_month, to_month,selected_city).mean()),
                     color='blue', marker='s')
             self.ax3.set_title('KWH maximum and min values per month')
@@ -197,10 +199,10 @@ class App:
         def botfig(self):
             # BOTTOM RIGHT FIGURE
             self.ax4.clear()
-            self.ax4.plot(range_plot(self,from_month, to_month,selected_city),
+            self.ax4.plot(range_plot(self,from_month, to_month),
                     (self.DataHandler.therm(from_month,to_month,selected_city).max()),
                     color='red', marker='*')
-            self.ax4.plot(range_plot(self,from_month, to_month,selected_city),
+            self.ax4.plot(range_plot(self,from_month, to_month),
                     (self.DataHandler.therm(from_month,to_month,selected_city).mean()),
                     color='blue', marker='s')
             self.ax4.set_title('THERM max and min values per month')
