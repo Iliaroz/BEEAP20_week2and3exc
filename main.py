@@ -6,51 +6,19 @@ from tkinter import filedialog as fd
 import tkinter.font as tkFont
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-
+import DataHandler
 import os.path
 # fit matplotlib charts normally
 from matplotlib import rcParams
 rcParams.update({'figure.autolayout': True})
 
 
-class DataHandler:
-    #init fun - what inside?
-    def load_file(self, filePath):
-        self.__df = pd.read_csv(filePath)
-        self.__df = self.__df.dropna()
-        
-        
-    def list_cities(self):
-        vals = list(self.__df['COMMUNITY AREA NAME'].unique())
-        vals.sort()
-        return vals
-    
-    
-    def data_city(self):#displays data for chosen city
-        selected_city = self._gCombo_city.get()
-        print(f"Selected city: {selected_city}")
-        self.__subdf = self.__df.loc[self.__df['COMMUNITY AREA NAME']== selected_city].rename(columns={"TERM APRIL 2010":"THERM APRIL 2010"})
-        return self.__subdf
-    
-    
-    def kwh(self, from_month, to_month):#display kwh columns for selected city
-        start = self.__subdf.columns.get_loc("KWH " + from_month + " 2010")
-        end = self.__subdf.columns.get_loc("KWH " + to_month + " 2010")+1
-        return self.__subdf.iloc[:,  range(start, end)]
-    
-    
-    def therm(self, from_month, to_month):#display kwh columns for selected city
-        start = self.__subdf.columns.get_loc("THERM " + from_month + " 2010")
-        end = self.__subdf.columns.get_loc("THERM " + to_month + " 2010")+1
-        return self.__subdf.iloc[:,  range(start, end)]
-    
-    def range_plot(self, from_month, to_month):
-        start = self.__subdf.columns.get_loc("THERM " + from_month + " 2010")
-        end = self.__subdf.columns.get_loc("THERM " + to_month + " 2010")+2
-        return range(1, end-start)
+
 
 class App:
     def __init__(self, root):
+                
+        
         # setting title
         root.title("Power histogram maker GUI")
         
@@ -163,9 +131,9 @@ class App:
         
         if os.path.isfile(filePath):
             try:
-                DataHandler.load_file(self, filePath)
+                self.DataHandler.load_file(filePath)
                                 
-                self._gCombo_city['values'] = DataHandler.list_cities(self)
+                self._gCombo_city['values'] = self.DataHandler.list_cities(self)
                 self._gLabel_path["text"] = os.path.basename(filePath)
             except OSError as err:
                 print(f"Cannot import file {filePath}.\nOS error: {err}\nExit.")
